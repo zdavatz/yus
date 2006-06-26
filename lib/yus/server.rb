@@ -4,28 +4,34 @@
 require 'drb'
 require 'yus/entity'
 require 'yus/session'
+require 'needle'
 
 module Yus
   class Server
     def initialize(persistence, config, logger)
-      @persistence = persistence
-      @config = config
-      @logger = logger
+      @needle = Needle::Registry.new
+      @needle.register(:persistence) { persistence }
+      @needle.register(:config) { config }
+      @needle.register(:logger) { logger }
       @sessions = []
       run_cleaner
     end
+    def autosession(domain, &block)
+      session = AutoSession.new(@needle, domain)
+      block.call(session)
+    end
     def login(name, password, domain)
-      @logger.info(self.class) { 
+      @needle.logger.info(self.class) { 
         sprintf('Login attempt for %s from %s', name, domain)
       }
-      hash = @config.digest.hexdigest(password)
+      hash = @needle.config.digest.hexdigest(password)
       session = login_root(name, hash, domain) \
-        || login_entity(name, hash, domain) # raises AuthenticationError
+        || login_entity(name, hash, domain) # raises YusError
       @sessions.push(session)
       session
     end
     def logout(session)
-      @logger.info(self.class) { 
+      @needle.logger.info(self.class) { 
         sprintf('Logout for %s', session)
       }
       @sessions.delete(session)
@@ -38,39 +44,42 @@ module Yus
     end
     private
     def authenticate(name, passhash)
-      if((user = @persistence.find_entity(name)) && user.authenticate(passhash))
-        @logger.info(self.class) { 
-          sprintf('Authentication succeeded for %s', name)
-        }
-        user
-      else
-        @logger.warn(self.class) { 
-          sprintf('Authentication failed for %s', name)
-        }
-        raise AuthenticationError, "Unknown user or wrong password"
-      end
+      user = @needle.persistence.find_entity(name) \
+        or raise UnknownEntityError, "Unknown Entity '#{name}'"
+      user.authenticate(passhash) \
+        or raise AuthenticationError, "Wrong password"
+      @needle.logger.info(self.class) { 
+        sprintf('Authentication succeeded for %s', name)
+      }
+      user
+    rescue YusError
+      @needle.logger.warn(self.class) { 
+        sprintf('Authentication failed for %s', name)
+      }
+      raise
     end
     def clean
       @sessions.delete_if { |session| session.expired? }
     end
     def login_entity(name, passhash, domain)
       entity = authenticate(name, passhash)
-      timeout = entity.preference("session_timeout", domain) \
-        || @config.session_timeout
-      EntitySession.new(@persistence, entity, domain, timeout)
+      timeout = entity.get_preference("session_timeout", domain) \
+        || @needle.config.session_timeout
+      EntitySession.new(@needle, entity, domain)
     end
     def login_root(name, passhash, domain)
-      if(name == @config.root_name && passhash == @config.root_pass)
-        @logger.info(self.class) { 
+      if(name == @needle.config.root_name \
+         && passhash == @needle.config.root_pass)
+        @needle.logger.info(self.class) { 
           sprintf('Authentication succeeded for root: %s', name)
         }
-        RootSession.new(@persistence, @config.session_timeout)
+        RootSession.new(@needle)
       end
     end
     def run_cleaner
       @cleaner = Thread.new {
         loop {
-          sleep(@config.cleaner_interval)
+          sleep(@needle.config.cleaner_interval)
           clean 
         }
       }

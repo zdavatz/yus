@@ -12,6 +12,12 @@ module Yus
     def setup
       @user = Entity.new('user')
     end
+    def test_authenticate
+      assert_equal(false, @user.authenticate(nil))
+      @user.passhash = '12345abcde'
+      assert_equal(false, @user.authenticate('abcde12345'))
+      assert_equal(true, @user.authenticate('12345abcde'))
+    end
     def test_join
       group1 = Entity.new('A Group')
       group2 = Entity.new('Another Group')
@@ -69,6 +75,7 @@ module Yus
     end
     def test_allowed
       assert_equal(false, @user.allowed?('write', 'Article'))
+      assert_equal(false, @user.allowed?('read', 'Article'))
       @user.grant('read', 'Article')
       assert_equal(false, @user.allowed?('write', 'Article'))
       assert_equal(true, @user.allowed?('read', 'Article'))
@@ -97,6 +104,24 @@ module Yus
       assert_equal(false, @user.allowed?('write'))
       assert_equal(false, @user.allowed?('read'))
     end
+    def test_privileged
+      assert_equal(false, @user.privileged?('write', 'Article'))
+      @user.grant('read', 'Article')
+      assert_equal(false, @user.privileged?('write', 'Article'))
+      assert_equal(true, @user.privileged?('read', 'Article'))
+      assert_equal(false, @user.privileged?('write'))
+      assert_equal(false, @user.privileged?('read'))
+    end
+    def test_privileged__delegated
+      group1 = Entity.new('group1')
+      assert_equal(false, @user.privileged?('write', 'Article'))
+      group1.grant('read', 'Article')
+      @user.join(group1)
+      assert_equal(false, @user.privileged?('write', 'Article'))
+      assert_equal(false, @user.privileged?('read', 'Article'))
+      assert_equal(false, @user.privileged?('write'))
+      assert_equal(false, @user.privileged?('read'))
+    end
     def test_valid
       assert_equal(true, @user.valid?)
       @user.valid_from = Time.now + 100
@@ -111,20 +136,32 @@ module Yus
       assert_equal(true, @user.valid?)
     end
     def test_domain_based_preference
-      assert_nil(@user.preference('other'))
-      assert_nil(@user.preference('pref'))
-      assert_nil(@user.preference('pref', 'domain'))
-      assert_nil(@user.preference('pref', 'other'))
+      assert_nil(@user.get_preference('other'))
+      assert_nil(@user.get_preference('pref'))
+      assert_nil(@user.get_preference('pref', 'domain'))
+      assert_nil(@user.get_preference('pref', 'other'))
       @user.set_preference('pref', 'value', 'domain')
-      assert_nil(@user.preference('other'))
-      assert_nil(@user.preference('pref'))
-      assert_equal('value', @user.preference('pref', 'domain'))
-      assert_nil(@user.preference('pref', 'other'))
+      assert_nil(@user.get_preference('other'))
+      assert_nil(@user.get_preference('pref'))
+      assert_equal('value', @user.get_preference('pref', 'domain'))
+      assert_nil(@user.get_preference('pref', 'other'))
       @user.set_preference('pref', 'global')
-      assert_nil(@user.preference('other'))
-      assert_equal('global', @user.preference('pref'))
-      assert_equal('value', @user.preference('pref', 'domain'))
-      assert_equal('global', @user.preference('pref', 'other'))
+      assert_nil(@user.get_preference('other'))
+      assert_equal('global', @user.get_preference('pref'))
+      assert_equal('value', @user.get_preference('pref', 'domain'))
+      assert_equal('global', @user.get_preference('pref', 'other'))
+    end
+    def test_rename
+      assert_equal('user', @user.name)
+      @user.rename('renamed')
+      assert_equal('renamed', @user.name)
+    end
+    def test_revoke__action
+      assert_equal(false, @user.allowed?('write'))
+      @user.grant('write')
+      assert_equal(true, @user.allowed?('write'))
+      @user.revoke('write')
+      assert_equal(false, @user.allowed?('write'))
     end
   end
 end

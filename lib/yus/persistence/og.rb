@@ -17,6 +17,9 @@ module Yus
       def find_entity(name)
         Entity.find_by_name(name)
       end
+      def save_entity(entity)
+        entity.save
+      end
     end
   end
   class Privilege

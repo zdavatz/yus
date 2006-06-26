@@ -6,6 +6,7 @@ require 'rclconf'
 require 'logger'
 require 'drb'
 require 'drb/ssl'
+require 'drb/timeridconv'
 require 'digest/sha2'
 
 default_dir = File.join(ENV['HOME'], '.yus')
@@ -43,11 +44,14 @@ persistence = nil
 case config.persistence
 when 'odba'
   require 'odba/connection_pool'
+  require 'odba/drbwrapper'
+  DRb.install_id_conv ODBA::DRbIdConv.new
   ODBA.storage.dbi = ODBA::ConnectionPool.new("DBI:pg:#{config.db_name}",
                                              config.db_user, config.db_auth)
   ODBA.cache.setup
   persistence = Yus::Persistence::Odba.new
 when 'og'
+  DRb.install_id_conv DRb::TimerIdConv.new
   Og.setup({
     :name     => config.db_name,
     :user     => config.db_user,

@@ -31,6 +31,13 @@ module Yus
       @privilege.grant(:everything)
       assert_equal(true, @privilege.granted?('Article'))
     end
+    def test_grant__wildcard
+      assert_equal(false, @privilege.granted?('org.oddb.company'))
+      @privilege.grant('org.oddb.*')
+      assert_equal(true, @privilege.granted?('org.oddb.company'))
+      assert_equal(false, @privilege.granted?('org.oddb'))
+      assert_equal(false, @privilege.granted?('org.foo.company'))
+    end
     def test_revoke
       @privilege.grant('Article')
       assert_equal(true, @privilege.granted?('Article'))

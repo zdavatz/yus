@@ -7,6 +7,9 @@ module Yus
     def initialize
       @items = {}
     end
+    def grant(item, expiry_time=:never)
+      @items.store(item, expiry_time)
+    end
     def granted?(item)
       if(expiry_time = @items[item])
         case expiry_time
@@ -19,11 +22,18 @@ module Yus
         # check time
         granted?(:everything)
       else
+        item = item.to_s.dup
+        if(item[-1] != ?*)
+          while(!item.empty?)
+            item.slice!(/[^.]*$/)
+            if(granted?(item + "*"))
+              return true
+            end
+            item.chop!
+          end
+        end
         false
       end
-    end
-    def grant(item, expiry_time=:never)
-      @items.store(item, expiry_time)
     end
     def revoke(item, expiry_time=nil)
       case expiry_time
