@@ -250,6 +250,9 @@ module Yus
     def get_preference(key)
       @user.get_preference(key, @domain)
     end
+    def ping
+      true
+    end
     def set_preference(key, value)
       debug("set_preference(#{key}, #{value})")
       @user.set_preference(key, value, @domain)

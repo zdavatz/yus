@@ -67,6 +67,9 @@ module Yus
     def set_preference(key, value, domain=nil)
       domain_preferences(domain || 'global')[key] = value
     end
+    def to_s
+      @name
+    end
     def valid?
       now = Time.now
       @valid_from < now && (!@valid_until || @valid_until > now)

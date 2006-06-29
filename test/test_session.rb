@@ -835,6 +835,9 @@ module Yus
       assert_equal('value', res)
       @persistence.mock_verify
     end
+    def test_ping
+      assert_equal(true, @session.ping)
+    end
   end
   class TestRootSession < Test::Unit::TestCase
     def setup

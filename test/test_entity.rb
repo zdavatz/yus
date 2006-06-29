@@ -163,5 +163,8 @@ module Yus
       @user.revoke('write')
       assert_equal(false, @user.allowed?('write'))
     end
+    def test_to_s
+      assert_equal('user', @user.to_s)
+    end
   end
 end
