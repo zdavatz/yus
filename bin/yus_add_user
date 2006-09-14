@@ -68,5 +68,5 @@ end
 session.create_entity(name)
 session.set_password(name, pass1.to_s)
 if(action)
-  session.grant(action, item || :everything)
+  session.grant(name, action, item)
 end
