@@ -63,6 +63,8 @@ module Yus
     end
     def login_entity(name, passhash, domain)
       entity = authenticate(name, passhash)
+      entity.login(domain)
+      @needle.persistence.save_entity(entity)
       timeout = entity.get_preference("session_timeout", domain) \
         || @needle.config.session_timeout
       EntitySession.new(@needle, entity, domain)

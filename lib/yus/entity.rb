@@ -21,6 +21,7 @@ module Yus
       @affiliations = []
       @privileges = Hash.new(false)
       @preferences = {}
+      @last_logins = {}
     end
     def allowed?(action, item=:everything)
       valid? &&  privileged?(action, item) \
@@ -45,8 +46,14 @@ module Yus
         @affiliations.push(party)
       end
     end
+    def last_login(domain)
+      (@last_logins ||= {})[domain]
+    end
     def leave(party)
       @affiliations.delete(party)
+    end
+    def login(domain)
+      (@last_logins ||= {}).store(domain, Time.now)
     end
     def get_preference(key, domain='global')
       domain_preferences(domain)[key] || domain_preferences('global')[key]

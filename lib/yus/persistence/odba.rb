@@ -37,7 +37,7 @@ module Yus
   end
   class Entity
     include ODBA::Persistable
-    ODBA_SERIALIZABLE = ['@privileges', '@preferences']
+    ODBA_SERIALIZABLE = ['@last_logins', '@privileges', '@preferences']
     alias :odba_join :join
     alias :odba_leave :leave
     def join(entity)

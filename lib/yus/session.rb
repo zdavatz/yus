@@ -4,6 +4,11 @@
 require 'drb'
 require 'thread'
 require 'yus/entity'
+begin 
+  require 'encoding/character/utf-8'
+rescue LoadError
+end
+
 
 module Yus
   class Session
@@ -86,6 +91,11 @@ module Yus
         save(user)
       }
       touch!
+    end
+    def last_login(name, domain=@domain)
+      if(user = find_entity(name))
+        user.last_login(domain)
+      end
     end
     def rename(oldname, newname)
       info("rename(#{oldname}, #{newname})")
