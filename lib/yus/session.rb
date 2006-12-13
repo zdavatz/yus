@@ -210,6 +210,19 @@ module Yus
         }
       }
     end
+    def rename(oldname, newname)
+      info("rename(#{oldname}, #{newname})")
+      @mutex.synchronize { 
+        user = find_or_fail(oldname)
+        if((other = @needle.persistence.find_entity(newname)) && other != user)
+          raise DuplicateNameError, "Duplicate name: #{newname}"
+        end
+        user.revoke('set_password', oldname)
+        user.rename(newname)
+        user.grant('set_password', newname)
+        save(user)
+      }
+    end
     def reset_entity_password(name, token, password)
       info("reset_entity_password(name=#{name}, token=#{token})")
       @mutex.synchronize {
