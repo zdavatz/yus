@@ -175,6 +175,7 @@ module Yus
     end
     def create_entity(name, pass=nil, valid_until=nil, valid_from=Time.now)
       info("create_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
+      raise InvalidNameError, "Invalid name: ''" if(name.empty?)
       entity = nil
       @mutex.synchronize { 
         if(@needle.persistence.find_entity(name))
@@ -208,6 +209,19 @@ module Yus
           memo.store(key, user.get_preference(key, domain))
           memo
         }
+      }
+    end
+    def rename(oldname, newname)
+      info("rename(#{oldname}, #{newname})")
+      @mutex.synchronize { 
+        user = find_or_fail(oldname)
+        if((other = @needle.persistence.find_entity(newname)) && other != user)
+          raise DuplicateNameError, "Duplicate name: #{newname}"
+        end
+        user.revoke('set_password', oldname)
+        user.rename(newname)
+        user.grant('set_password', newname)
+        save(user)
       }
     end
     def reset_entity_password(name, token, password)
