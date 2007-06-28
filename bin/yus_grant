@@ -10,13 +10,20 @@ require 'yus/session'
 require 'getoptlong'
 
 opts = []
+command = :grant
 GetoptLong.new(
-  ['--config', '-c', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--root_name', '-r', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--server_url', '-u', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--yus_dir', '-d', GetoptLong::OPTIONAL_ARGUMENT]
-).each { |pair|
-  opts.push(pair.join('=')[2..-1])
+  ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
+  ['--root_name', '-r', GetoptLong::REQUIRED_ARGUMENT],
+  ['--server_url', '-u', GetoptLong::REQUIRED_ARGUMENT],
+  ['--yus_dir', '-d', GetoptLong::REQUIRED_ARGUMENT],
+  ['--revoke', '-R', GetoptLong::NO_ARGUMENT]
+).each { |key, value|
+	case key
+	when '--revoke'
+		command = :revoke
+	else
+		opts.push([key, value].join('=')[2..-1])
+	end
 }
 
 name, action, item = ARGV
@@ -55,4 +62,5 @@ rescue Yus::YusError => e
   retry
 end
 
-session.grant(name, action, item)
+session.send(command, name, action, item)
+puts sprintf("%sed permission to %s %s for %s", command, action, item, name)
