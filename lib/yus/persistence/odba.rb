@@ -51,18 +51,4 @@ module Yus
       res
     end
   end
-  class Server
-    alias :odba_login :login
-    alias :odba_logout :logout
-    def login(*args)
-      ODBA::DRbWrapper.new(odba_login(*args))
-    end
-    def logout(wrapped_session)
-      ## if wrapped_session is no DRbWrapper, we probably have an
-      #  object-id-recycling-problem
-      if(wrapped_session.respond_to?(:__wrappee))
-        odba_logout(wrapped_session.__wrappee)
-      end
-    end
-  end
 end
