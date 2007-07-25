@@ -51,4 +51,18 @@ module Yus
       res
     end
   end
+  class Server
+    alias :odba_login_entity :login_entity
+    alias :odba_login_root :login_root
+    def login_entity(*args)
+      if(entity = odba_login_entity(*args))
+        ODBA::DRbWrapper.new(entity)
+      end
+    end
+    def login_root(*args)
+      if(root = odba_login_root(*args))
+        ODBA::DRbWrapper.new(root)
+      end
+    end
+  end
 end
