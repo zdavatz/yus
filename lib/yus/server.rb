@@ -24,7 +24,7 @@ module Yus
       @needle.logger.info(self.class) { 
         sprintf('Login attempt for %s from %s', name, domain)
       }
-      hash = @needle.config.digest.hexdigest(password)
+      hash = @needle.config.digest.hexdigest(password.to_s)
       session = login_root(name, hash, domain) \
         || login_entity(name, hash, domain) # raises YusError
       @sessions.push(session)

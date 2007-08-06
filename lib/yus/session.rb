@@ -175,7 +175,6 @@ module Yus
     end
     def create_entity(name, pass=nil, valid_until=nil, valid_from=Time.now)
       info("create_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
-      raise InvalidNameError, "Invalid name: ''" if(name.empty?)
       entity = nil
       @mutex.synchronize { 
         if(@needle.persistence.find_entity(name))
