@@ -62,6 +62,13 @@ module Yus
       (privilege = @privileges[Entity.sanitize(action)]) \
         && privilege.granted?(item)
     end
+    def privileged_until(action, item=:everything)
+      if(privilege = @privileges[Entity.sanitize(action)])
+        privilege.expiry_time(item)
+      else
+        raise NotPrivilegedError
+      end
+    end
     def rename(new_name)
       @name = new_name
     end

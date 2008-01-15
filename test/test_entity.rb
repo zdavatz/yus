@@ -122,6 +122,37 @@ module Yus
       assert_equal(false, @user.privileged?('write'))
       assert_equal(false, @user.privileged?('read'))
     end
+    def test_privileged_until
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('read', 'Article')
+      }
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('write', 'Article')
+      }
+      @user.grant('read', 'Article')
+      assert_nil(@user.privileged_until('read', 'Article'))
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('read')
+      }
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('write', 'Article')
+      }
+      @user.grant('read', 'Article', Time.local(3000))
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('read')
+      }
+      assert_equal(Time.local(3000), 
+                   @user.privileged_until('read', 'Article'))
+      assert_raises(NotPrivilegedError) {
+        @user.privileged_until('write', 'Article')
+      }
+      @user.grant('read', :everything, Time.local(4000))
+      assert_equal(Time.local(4000), 
+                   @user.privileged_until('read', 'Article'))
+      @user.grant('read', 'Article', Time.local(5000))
+      assert_equal(Time.local(5000), 
+                   @user.privileged_until('read', 'Article'))
+    end
     def test_valid
       assert_equal(true, @user.valid?)
       @user.valid_from = Time.now + 100

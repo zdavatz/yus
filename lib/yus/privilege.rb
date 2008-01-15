@@ -3,9 +3,16 @@
 
 module Yus
   class Privilege
-    attr_accessor :expiry_time
+    attr_writer :expiry_time
     def initialize
       @items = {}
+    end
+    def expiry_time(item=:everything)
+      if(time = [@items[item], @items[:everything]].compact.max)
+        time if time.is_a?(Time)
+      else
+        raise NotPrivilegedError
+      end
     end
     def grant(item, expiry_time=:never)
       @items.store(item, expiry_time)

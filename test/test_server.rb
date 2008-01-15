@@ -14,51 +14,46 @@ module Yus
   class TestServer < Test::Unit::TestCase
     def setup
       @config = FlexMock.new
-      @config.mock_handle(:cleaner_interval) { 100000000 }
+      @config.should_receive(:cleaner_interval).and_return { 100000000 }
       digest = FlexMock.new
-      digest.mock_handle(:hexdigest) { |input| input }
-      @config.mock_handle(:digest) { digest }
-      @config.mock_handle(:session_timeout) { 0.5 }
-      @config.mock_handle(:root_name) { 'admin' }
-      @config.mock_handle(:root_pass) { 'admin' }
+      digest.should_receive(:hexdigest).and_return { |input| input }
+      @config.should_receive(:digest).and_return { digest }
+      @config.should_receive(:session_timeout).and_return { 0.5 }
+      @config.should_receive(:root_name).and_return { 'admin' }
+      @config.should_receive(:root_pass).and_return { 'admin' }
       @logger = FlexMock.new
-      @logger.mock_handle(:info) { }
-      @logger.mock_handle(:debug) { }
+      @logger.should_receive(:info)
+      @logger.should_receive(:debug)
       @persistence = FlexMock.new
       @server = Server.new(@persistence, @config, @logger)
     end
     def test_authenticate__no_user
-      @logger.mock_handle(:warn, 1) {}
-      @persistence.mock_handle(:find_entity, 1) {}
+      @logger.should_receive(:warn).times(1)
+      @persistence.should_receive(:find_entity).times(1)
       assert_raises(UnknownEntityError) {
         @server.authenticate('name', 'password')
       }
-      @persistence.mock_verify
-      @logger.mock_verify
     end
     def test_authenticate__wrong_password
-      @logger.mock_handle(:warn, 1) {}
+      @logger.should_receive(:warn).times(1)
       user = FlexMock.new
-      user.mock_handle(:authenticate) { false }
-      @persistence.mock_handle(:find_entity, 1) { user }
+      user.should_receive(:authenticate).and_return { false }
+      @persistence.should_receive(:find_entity).times(1).and_return { user }
       assert_raises(AuthenticationError) {
         @server.authenticate('name', 'password')
       }
-      @persistence.mock_verify
-      @logger.mock_verify
     end
     def test_authenticate__success
       user = FlexMock.new
-      user.mock_handle(:authenticate) { |pass|
+      user.should_receive(:authenticate).and_return { |pass|
         assert_equal('password', pass)
         true 
       }
-      @persistence.mock_handle(:find_entity, 1) { user }
+      @persistence.should_receive(:find_entity).times(1).and_return { user }
       assert_nothing_raised {
         result = @server.authenticate('name', 'password')
         assert_equal(user, result)
       }
-      @persistence.mock_verify
     end
     def test_autosession
       @server.autosession('domain') { |session|
@@ -67,28 +62,29 @@ module Yus
     end
     def test_login__success
       user = FlexMock.new
-      user.mock_handle(:authenticate) { |pass|
+      user.should_receive(:authenticate).and_return { |pass|
         assert_equal('password', pass)
         true 
       }
-      user.mock_handle(:get_preference) { |key, domain|
+      user.should_receive(:login)
+      user.should_receive(:get_preference).and_return { |key, domain|
         {
           'session_timeout' =>  0.5, 
         }[key]
       }
-      @persistence.mock_handle(:find_entity, 1) { user }
+      @persistence.should_receive(:find_entity).times(1).and_return { user }
+      @persistence.should_receive(:save_entity).times(1) 
       assert_nothing_raised {
         session = @server.login('name', 'password', 'domain')
         assert_instance_of(EntitySession, session)
         assert_kind_of(DRb::DRbUndumped, session)
         assert_equal([session], @server.instance_variable_get('@sessions'))
       }
-      @persistence.mock_verify
     end
     def test_logout
       needle = FlexMock.new
-      needle.mock_handle(:config) { @config }
-      @config.mock_handle(:session_timeout) { 200 }
+      needle.should_receive(:config).and_return { @config }
+      @config.should_receive(:session_timeout).and_return { 200 }
       sessions = @server.instance_variable_get('@sessions')
       session = RootSession.new(needle)
       sessions.push(session)
@@ -104,8 +100,8 @@ module Yus
     end
     def test_clean
       needle = FlexMock.new
-      needle.mock_handle(:config) { @config }
-      @config.mock_handle(:session_timeout) { 0.5 }
+      needle.should_receive(:config).and_return { @config }
+      @config.should_receive(:session_timeout).and_return { 0.5 }
       sessions = @server.instance_variable_get('@sessions')
       session = RootSession.new(needle)
       sessions.push(session)
@@ -117,13 +113,13 @@ module Yus
   class TestServerCleaner < Test::Unit::TestCase
     def test_autoclean
       config = FlexMock.new
-      config.mock_handle(:cleaner_interval) { 0.5 }
-      config.mock_handle(:session_timeout) { 0.5 }
+      config.should_receive(:cleaner_interval).and_return { 0.5 }
+      config.should_receive(:session_timeout).and_return { 0.5 }
       logger = FlexMock.new
-      logger.mock_handle(:info) {}
-      logger.mock_handle(:debug) {}
+      logger.should_receive(:info)
+      logger.should_receive(:debug)
       needle = FlexMock.new
-      needle.mock_handle(:config) { config }
+      needle.should_receive(:config).and_return { config }
       persistence = FlexMock.new
       server = Server.new(persistence, config, logger)
       sessions = server.instance_variable_get('@sessions')

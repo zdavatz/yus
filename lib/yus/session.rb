@@ -59,12 +59,14 @@ module Yus
       @timeout = -1
     end
     def disaffiliate(name, groupname)
-      info("disaffiliate(name=#{name}, group=#{groupname}")
+      info("disaffiliate(name=#{name}, group=#{groupname})")
       @mutex.synchronize { 
         allow_or_fail('edit', 'yus.entities')
         user = find_or_fail(name)
         group = find_or_fail(groupname)
-        user.leave(group)
+        puts group.inspect
+        puts user.leave(group).inspect
+        puts user.inspect
         save(user, group)
       }
       touch!
