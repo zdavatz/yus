@@ -30,6 +30,14 @@ module Yus
       @sessions.push(session)
       session
     end
+    def login_token(name, token, domain)
+      entity = authenticate_token(name, token)
+      entity.login(domain)
+      @needle.persistence.save_entity(entity)
+      timeout = entity.get_preference("session_timeout", domain) \
+        || @needle.config.session_timeout
+      TokenSession.new(@needle, entity, domain)
+    end
     def logout(session)
       @needle.logger.info(self.class) { 
         sprintf('Logout for %s', session)
@@ -55,6 +63,22 @@ module Yus
     rescue YusError
       @needle.logger.warn(self.class) { 
         sprintf('Authentication failed for %s', name)
+      }
+      raise
+    end
+    def authenticate_token(name, token)
+      user = @needle.persistence.find_entity(name) \
+        or raise UnknownEntityError, "Unknown Entity '#{name}'"
+      user.authenticate_token(token) \
+        or raise AuthenticationError, "Wrong token or token expired"
+      @needle.logger.info(self.class) { 
+        sprintf('Token-Authentication succeeded for %s', name)
+      }
+      user
+    rescue YusError
+      @needle.persistence.save_entity(user) if user
+      @needle.logger.warn(self.class) { 
+        sprintf('Token-Authentication failed for %s', name)
       }
       raise
     end

@@ -33,6 +33,7 @@ defaults = {
                                           File.dirname(__FILE__)),
   'ssl_cert'          => File.expand_path('../data/yus.crt', 
                                           File.dirname(__FILE__)),
+  'token_lifetime'    => 30,
   'yus_dir'           => default_dir,
 }
 

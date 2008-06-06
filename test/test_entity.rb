@@ -18,6 +18,27 @@ module Yus
       assert_equal(false, @user.authenticate('abcde12345'))
       assert_equal(true, @user.authenticate('12345abcde'))
     end
+    def test_authenticate_token
+      assert_equal(false, @user.authenticate_token(nil))
+      token = '123456'
+      @user.set_token token, Time.now + 60
+      other = '654321'
+      @user.set_token other, Time.now + 60
+      assert_equal(true, @user.authenticate_token(token))
+      assert_equal(true, @user.authenticate_token(other))
+      assert_equal(false, @user.authenticate_token(token))
+      @user.set_token token, Time.now - 60
+      assert_equal(false, @user.authenticate_token(token))
+
+      # Be paranoid
+      token = '123456'
+      @user.set_token token, Time.now + 60
+      other = '654321'
+      @user.set_token other, Time.now + 60
+      assert_equal(false, @user.authenticate_token('hacker'))
+      assert_equal(false, @user.authenticate_token(token))
+      assert_equal(false, @user.authenticate_token(other))
+    end
     def test_join
       group1 = Entity.new('A Group')
       group2 = Entity.new('Another Group')

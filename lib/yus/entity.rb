@@ -22,6 +22,7 @@ module Yus
       @privileges = Hash.new(false)
       @preferences = {}
       @last_logins = {}
+      @tokens = {}
     end
     def allowed?(action, item=:everything)
       valid? &&  privileged?(action, item) \
@@ -29,6 +30,15 @@ module Yus
     end
     def authenticate(passhash)
       @passhash == passhash.to_s
+    end
+    def authenticate_token(token)
+      if expires = (@tokens ||= {}).delete(token)
+        expires > Time.now
+      else
+        # Hacking-Attempt? Remove all Tokens for this user.
+        @tokens.clear
+        false
+      end
     end
     def detect_circular_affiliation(entity)
       _detect_circular_affiliation(entity)
@@ -69,6 +79,9 @@ module Yus
         raise NotPrivilegedError
       end
     end
+    def remove_token(token)
+      @tokens.delete(token) if @tokens
+    end
     def rename(new_name)
       @name = new_name
     end
@@ -80,6 +93,9 @@ module Yus
     end
     def set_preference(key, value, domain=nil)
       domain_preferences(domain || 'global')[key] = value
+    end
+    def set_token(token, expires)
+      (@tokens ||= {}).store token, expires
     end
     def to_s
       @name

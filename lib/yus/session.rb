@@ -99,6 +99,11 @@ module Yus
         user.last_login(domain)
       end
     end
+    def remove_token(token)
+      @user.remove_token token
+      save @user
+      nil
+    end
     def rename(oldname, newname)
       info("rename(#{oldname}, #{newname})")
       @mutex.synchronize { 
@@ -272,6 +277,13 @@ module Yus
     def name
       @user.name
     end
+    def generate_token
+      token = @needle.config.digest.hexdigest(rand(2**128).to_s)
+      expires = Time.now + @needle.config.token_lifetime.to_i * 24*60*60
+      @user.set_token token, expires
+      save @user
+      token
+    end
     def get_preference(key)
       @user.get_preference(key, @domain)
     end
@@ -294,6 +306,16 @@ module Yus
     end
     def valid?
       @user.valid?
+    end
+  end
+  class TokenSession < EntitySession
+    def allowed?(*args)
+      key, arg, = args
+      if key == 'set_password' || ( key == 'edit' && arg == 'yus.entities' )
+        false
+      else
+        super
+      end
     end
   end
   class RootSession < Session
