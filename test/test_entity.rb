@@ -218,5 +218,24 @@ module Yus
     def test_to_s
       assert_equal('user', @user.to_s)
     end
+    def test_info
+      assert_equal ['user'], @user.info
+      @user.grant('write')
+      assert_equal ['user', ['write', [['everything']]]], @user.info
+      @user.grant('write', 'Article')
+      assert_equal ['user', ['write', [['Article'], ['everything']]]], @user.info
+      group1 = Entity.new('group1')
+      group1.grant('read', 'Article')
+      @user.join(group1)
+      assert_equal ['user', ['write', [['Article'], ['everything']]], ['group1']], @user.info
+      group2 = Entity.new('group2')
+      group2.grant('read', 'Journal')
+      @user.join(group2)
+      assert_equal ['user', ['write', [['Article'], ['everything']]], ['group1', 'group2']], @user.info
+      assert_equal ['user', ['write', [['Article'], ['everything']]],
+        ['group1', ['read', [['Article']]]],
+        ['group2', ['read', [['Journal']]]]],
+        @user.info(true)
+    end
   end
 end

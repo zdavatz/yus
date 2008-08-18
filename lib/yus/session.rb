@@ -325,6 +325,10 @@ module Yus
     def name
       @needle.config.root_name
     end
+    def show(name, recursive=false)
+      require 'pp'
+      find_or_fail(name).info(recursive).pretty_inspect
+    end
     def valid?
       true
     end

@@ -42,6 +42,15 @@ module Yus
         false
       end
     end
+    def info
+      @items.collect { |item, time|
+        info = [item.to_s]
+        if time.is_a?(Time)
+          info.push time
+        end
+        info
+      }.sort
+    end
     def revoke(item, expiry_time=nil)
       case expiry_time
       when Time

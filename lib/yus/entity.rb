@@ -50,6 +50,20 @@ module Yus
       action = Entity.sanitize(action)
       (@privileges[action] ||= Privilege.new).grant(item, expires)
     end
+    def info(recursive=false)
+      info = [ @name ]
+      @privileges.sort.each { |action, priv|
+        info.push [action, priv.info]
+      }
+      if recursive
+        @affiliations.sort_by { |entity| entity.name }.each { |entity|
+          info.push entity.info(true)
+        }
+      elsif !@affiliations.empty?
+        info.push @affiliations.collect { |entity| entity.name }.sort
+      end
+      info
+    end
     def join(party)
       unless(@affiliations.include?(party))
         party.detect_circular_affiliation(self)
