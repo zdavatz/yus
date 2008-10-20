@@ -11,6 +11,7 @@ require 'getoptlong'
 
 opts = []
 command = :grant
+date = 'until'
 GetoptLong.new(
   ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
   ['--root_name', '-r', GetoptLong::REQUIRED_ARGUMENT],
@@ -21,16 +22,17 @@ GetoptLong.new(
 	case key
 	when '--revoke'
 		command = :revoke
+    date = 'from'
 	else
 		opts.push([key, value].join('=')[2..-1])
 	end
 }
 
-name, action, item = ARGV
+name, action, item, expires = ARGV
 
 unless(action)
 	puts <<-EOS
-Usage: yus_grant <username> <action> [<item>]
+Usage: yus_grant <username> <action> [<item> [<expiry_time>]]
 	EOS
   exit
 end
@@ -47,6 +49,17 @@ defaults = {
   'yus_dir'           => default_dir,
 }
 
+time = nil
+if expires
+  if match = /(\d{1,2})\.(\d{1,2})\.(\d{4})/.match(expires.to_s)
+  time = Time.local(match[3].to_i, match[2].to_i, match[1].to_i)
+  else
+    puts <<-EOS
+expiry_date must be in the Format: mm.dd.YYYY
+    EOS
+  end
+end
+
 config = RCLConf::RCLConf.new(opts, defaults)
 config.load(config.config)
 
@@ -62,5 +75,6 @@ rescue Yus::YusError => e
   retry
 end
 
-session.send(command, name, action, item)
-puts sprintf("%sed permission to %s %s for %s", command, action, item, name)
+session.send(command, name, action, item, time)
+puts sprintf("%sed permission to %s %s for %s %s %s", 
+             command, action, item, name, date, expires)
