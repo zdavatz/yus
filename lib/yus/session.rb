@@ -47,7 +47,7 @@ module Yus
       entity
     end
     def delete_entity(name)
-      info("delete_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
+      info("delete_entity(name=#{name})")
       allow_or_fail 'edit', 'yus.entities'
       entity = find_or_fail name
       @needle.persistence.delete_entity name
