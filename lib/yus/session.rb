@@ -46,14 +46,13 @@ module Yus
       touch!
       entity
     end
-=begin
     def delete_entity(name)
-      unless(allowed?('edit', 'yus.entities'))
-        raise NotPrivilegedError, 'You are not privileged to edit Entities'
-      end
+      info("delete_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
+      allow_or_fail 'edit', 'yus.entities'
+      entity = find_or_fail name
+      @needle.persistence.delete_entity name
       touch!
     end
-=end
     def destroy!
       @needle = @user = nil
       @timeout = -1

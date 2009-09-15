@@ -19,6 +19,15 @@ module Yus
         @entities.odba_store
         entity
       end
+      def delete_entity(name)
+        if entity = @entities.delete(Entity.sanitize(name))
+          @entities.odba_store
+          affiliations = entity.affiliations
+          affiliations.odba_delete unless affiliations.odba_unsaved?
+          entity.odba_delete
+          entity
+        end
+      end
       def entities
         @entities.values
       end
