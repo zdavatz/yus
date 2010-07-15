@@ -51,3 +51,7 @@ If you create a new user you have to make sure that
 	bin/yusd
 
 is running.
+
+To run the tests you are gonne need
+
+	flexmock (0.8.6)
