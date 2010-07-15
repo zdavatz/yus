@@ -15,7 +15,7 @@ with the files
 
 	/etc/yus/data/yus.crt  
 	/etc/yus/data/yus.key
-	/etc/yus/data/yus.enc
+	/etc/yus/data/yus.key.enc
 
 and also 
 
