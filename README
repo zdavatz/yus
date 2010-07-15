@@ -5,3 +5,33 @@ Install the following packages with gem:
 	dbi (via rubygems)
 	needle (via rubygems)
 	odba (from scm.ywesee.com)
+
+Make sure you got the directory
+
+	/etc/yus/
+	/etc/yus/data/
+
+with the files
+
+	/etc/yus/data/yus.crt  
+	/etc/yus/data/yus.key
+	/etc/yus/data/yus.enc
+
+and also 
+
+	/etc/yus/yus.yml
+
+the content of the yaml-file should be
+
+	---
+	root_name: email@domain.com
+	root_pass: 7322we3asalkasdfkjl9234kjljasd234234ljsdlfkasjw23235lajsdfwr3scv
+	log_level: DEBUG
+	ssl_key: /etc/yus/data/yus.key
+	ssl_cert: /etc/yus/data/yus.crt
+	session_timeout: 3600
+
+Create a new user with
+
+	yus_add_user email@domain.com login ch.oddb.RootUser
+
