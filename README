@@ -1,0 +1,7 @@
+yus is only running on Ruby1.8
+
+Install the following packages with gem:
+
+	dbi (via rubygems)
+	needle (via rubygems)
+	odba (from scm.ywesee.com)
