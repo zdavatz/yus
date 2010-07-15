@@ -31,6 +31,17 @@ the content of the yaml-file should be
 	ssl_cert: /etc/yus/data/yus.crt
 	session_timeout: 3600
 
+To create the keys do
+
+sha256.rb (for the sha256 value of password) with your Ruby-Script
+	
+	require 'digest/sha2'
+	print Digest::SHA256.hexdigest('password'),"\n"
+
+for id_rsa.crt
+	
+	$ openssl req -new -x509 -key .ssh/id_rsa -out .ssh/id_rsa.crt
+
 Create a new user with
 
 	yus_add_user email@domain.com login ch.oddb.RootUser
