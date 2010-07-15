@@ -2,9 +2,9 @@ yus is only running on Ruby1.8
 
 Install the following packages with gem:
 
-	dbi (via rubygems)
-	needle (via rubygems)
-	odba (from scm.ywesee.com)
+	needle (1.3.0)
+	pg (0.9.0) 
+	postgres (0.7.9.2008.01.28)
 
 Make sure you got the directory
 
@@ -61,3 +61,6 @@ To run the tests you are gonne need
   dbi-0.4.x, because it has already been known that the dbd-pg-0.3.x
   depends on the library, deprecated-0.2.x, that causes an error.
 
+* ruby-dbi version via emerge that works is 0.2.0-r1
+
+* Install odba (from scm.ywesee.com)
