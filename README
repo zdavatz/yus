@@ -35,3 +35,8 @@ Create a new user with
 
 	yus_add_user email@domain.com login ch.oddb.RootUser
 
+If you create a new user you have to make sure that
+
+	bin/yusd
+
+is running.
