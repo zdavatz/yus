@@ -1,3 +1,5 @@
+If you want to know why this software exists, please read the README file of ch.oddb.org at scm.ywesee.com
+
 yus is only running on Ruby1.8
 
 Install the following packages with gem:
@@ -64,3 +66,12 @@ To run the tests you are gonne need
 * ruby-dbi version via emerge that works is 0.2.0-r1
 
 * Install odba (from scm.ywesee.com)
+
+[SETUP POSTGRES DB]
+$ su - postgres
+$ createuser yus
+$ createdb yus
+$ exit
+$ cd [yus-git-reposito]
+$ ruby bin/yusd
+
