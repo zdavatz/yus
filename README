@@ -8,6 +8,10 @@ Install the following packages with gem:
 	pg (0.9.0) 
 	postgres (0.7.9.2008.01.28)
 
+Install from source
+
+	ruby-password (0.5.3)
+
 Make sure you got the directory
 
 	/etc/yus/
