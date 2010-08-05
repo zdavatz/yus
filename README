@@ -53,6 +53,12 @@ To create root_pass do
 	SHA256 encoding:
 	48714061119f3bb753a0c63dd4230f641ab79e58eb603fc263925c53580acdf1
 
+		Note:
+
+			It seems that the yus server can work without the enconding password string, but
+			yus admin tools (yus_add_user etc.) do not work without the password
+			in my local environment.
+
 Then you should paste the enconding password in 'root-pass' of
 
 	/etc/yus/yus.yml 
