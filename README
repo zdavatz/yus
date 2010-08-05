@@ -31,18 +31,34 @@ the content of the yaml-file should be
 
 	---
 	root_name: email@domain.com
-	root_pass: 7322we3asalkasdfkjl9234kjljasd234234ljsdlfkasjw23235lajsdfwr3scv
+	root_pass: 7322we3asalkasdfkjl9234kjljasd234234ljsdlfkasjw23235lajsdfwr3scv [the SHA2-hash of your password]
 	log_level: DEBUG
-	ssl_key: /etc/yus/data/yus.key
-	ssl_cert: /etc/yus/data/yus.crt
+	ssl_key: /etc/yus/data/yus.key [path to an rsa private key]
+	ssl_cert: /etc/yus/data/yus.crt [path to a ssl x509 certificate]
 	session_timeout: 3600
 
-To create the keys do
+To create root_pass do
 
-sha256.rb (for the sha256 value of password) with your Ruby-Script
+	[[	
+		This is the usage:
+
+		$ cat sha256.rb
+		require 'digest/sha2'
+		print "password: ", ARGV[0], "\n"
+		print "SHA256 encoding: ",Digest::SHA256.hexdigest(ARGV[0]),"\n"
+	]]
 	
-	require 'digest/sha2'
-	print Digest::SHA256.hexdigest('password'),"\n"
+	$ ruby sha256.rb hatakeyama [sha256.rb is in the source you can use that].
+	password: hatakeyama
+	SHA256 encoding:
+	48714061119f3bb753a0c63dd4230f641ab79e58eb603fc263925c53580acdf1
+
+Then you should paste the enconding password in 'root-pass' of
+
+	/etc/yus/yus.yml 
+
+for the yus server setup. When you start the yus server or you use yus admin commands, the
+server asks you for the password.
 
 for id_rsa.crt
 	
