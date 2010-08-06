@@ -71,7 +71,7 @@ for id_rsa.crt
 
 Create a new user with
 
-	yus_add_user email@domain.com login ch.oddb.RootUser
+	yus_add_user email@domain.com login org.oddb.RootUser
 
 If you create a new user you have to make sure that
 
