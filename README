@@ -73,6 +73,28 @@ Create a new user with
 
 	yus_add_user email@domain.com login org.oddb.RootUser
 
+	[[Note: 
+	
+	> This 'org.oddb.RootUser' is refered to in
+	> http://scm.ywesee.com/?p=oddb.org/.git;a=blob;f=src/state/admin/login.rb;h=1d910af359a224036fc761187bcf960a0d734b80;hb=HEAD#l45
+	>
+	> oddb.org/state/admin/login.rb
+	>  def viral_modules(user)
+	>    [
+	>      ['org.oddb.RootUser', State::Admin::Root],
+	>      ['org.oddb.AdminUser', State::Admin::Admin],
+	>      ['org.oddb.PowerUser', State::Admin::PowerUser],
+	>      ['org.oddb.CompanyUser', State::Admin::CompanyUser],
+	>      ['org.oddb.PowerLinkUser', State::Admin::PowerLinkUser],
+	>    ].each { |key, mod|
+	>      if(user.allowed?("login", key))
+	>        yield mod
+	>      end
+	>    }
+	>  end
+
+	]]
+
 If you create a new user you have to make sure that
 
 	bin/yusd
