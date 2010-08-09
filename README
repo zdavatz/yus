@@ -111,24 +111,36 @@ menu in ch.oddb.org
 
 For installing extensive user privileges for ch.oddb.org you need to do the following:
 
-	> It also works to add a new user from the web interface
+	> 1. create RootUser group by
 	>
-	>   Neuer Benutzer
+	>   yus_add RootUser
 	>
-	> After I added all the following:
+	> 2. create mhatakeyama@ywesee.com
 	>
-	> yus_grant mhatakeyama@ywesee.com edit yus.entities
-	> yus_grant mhatakeyama@ywesee.com grant  login
-	> yus_grant mhatakeyama@ywesee.com grant  view
-	> yus_grant mhatakeyama@ywesee.com grant  create
-	> yus_grant mhatakeyama@ywesee.com grant  edit
-	> yus_grant mhatakeyama@ywesee.com grant  credit
+	>  yus_add mhatakeyama@ywesee.com login org.oddb.RootUser
 	>
-	> I created RootUser with the 'Neuer Benutzer' button.
-	> And I checked the RootUser group for mhatakeyama@ywesee.com
+	> 3. add some privileges to RootUser
 	>
-	> Then, the Privilege-Boxes became gray.
-	> The gray checkboxes mean that the privileges are granted.
+	>  yus_grant RootUser edit yus.entities
+	>  yus_grant RootUser login org.oddb.RootUser
+	>  yus_grant RootUser edit org.oddb.drugs
+	>
+	> 4. check the RootUser group
+	>
+	>  Admin > Benutzer > mhatakeyama@ywesee.com
+	>
+	>  check the RootUser box
+	>
+	> 5. see the mhatakeyama@ywesee.com
+	>
+	> Then
+	>
+	>  edit yus.entities
+	>  login org.oddb.RootUser
+	>  edit org.oddb.drugs
+	>
+	> become gray. The other box can be checked, but
+	> as a default of RootUser, the three privileges are checked.
 
 To run the tests you are gonne need
 
