@@ -101,6 +101,27 @@ If you create a new user you have to make sure that
 
 is running.
 
+For installing extensive users for ch.oddb.org you need to do the following:
+
+	> It also works to add a new user from the web interface
+	>
+	>   Neuer Benutzer
+	>
+	> After I added all the following:
+	>
+	> yus_grant mhatakeyama@ywesee.com grant  edit yus.entities
+	> yus_grant mhatakeyama@ywesee.com grant  grant login
+	> yus_grant mhatakeyama@ywesee.com grant  grant view
+	> yus_grant mhatakeyama@ywesee.com grant  grant create
+	> yus_grant mhatakeyama@ywesee.com grant  grant edit
+	> yus_grant mhatakeyama@ywesee.com grant  grant credit
+	>
+	> I created RootUser with the 'Neuer Benutzer' button.
+	> And I checked the RootUser group for mhatakeyama@ywesee.com
+	>
+	> Then, the Privilege-Boxes became gray.
+	> The gray checkboxes mean that the privileges are granted.
+
 To run the tests you are gonne need
 
 	flexmock (0.8.6)
