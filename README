@@ -117,7 +117,7 @@ For installing extensive user privileges for ch.oddb.org you need to do the foll
 	>
 	> 2. create mhatakeyama@ywesee.com
 	>
-	>  yus_add mhatakeyama@ywesee.com login org.oddb.RootUser
+	>  yus_add_user mhatakeyama@ywesee.com login org.oddb.RootUser
 	>
 	> 3. add some privileges to RootUser
 	>
