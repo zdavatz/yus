@@ -66,6 +66,12 @@ To create root_pass do
 			yus admin tools (yus_add_user etc.) do not work without the password
 			in my local environment.
 
+      root_pass is used when yus admin tools (yus_show, yus_add_user, etc.) are called.
+      ssl_key and ssl_cert files are used when yusd starts. If you set a password when
+      you generate the rsa private key, the password is required when yusd starts.
+      root_pass and ssl_key are independent from each other. The password does not have
+      to be the same.
+
 Then you should paste the enconding password in 'root-pass' of
 
 	/etc/yus/yus.yml 
