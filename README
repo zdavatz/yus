@@ -2,6 +2,14 @@ If you want to know why this software exists, please read the README file of ch.
 
 yus is only running on Ruby1.8
 
+If you do not yet have a private key you will have to create one with 
+
+  ssh-keygen -t rsa
+
+do _not_ set a password for the key otherwise yus-server will always
+ask you for a password at startup-time. The password you set will be
+with the sha256.rb.
+
 Install the following packages with gem:
 
 	needle (1.3.0)
