@@ -11,10 +11,6 @@ software packages.
 
 * Only runs on Ruby 1.8
 
-== SYNOPSIS:
-
-  FIX (code sample of usage)
-
 == REQUIREMENTS:
 
 * Install the following packages with gem:
