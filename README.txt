@@ -15,10 +15,10 @@ software packages.
 
 * Install the following packages with gem:
 
-  needle (1.3.0)
-  pg (0.9.0) 
-  postgres (0.7.9.2008.01.28)
-  flexmock (0.8.6) - to run the tests
+  * needle (1.3.0)
+  * pg (0.9.0) 
+  * postgres (0.7.9.2008.01.28)
+  * flexmock (0.8.6) - to run the tests
 
 == INSTALL:
 
