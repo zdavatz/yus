@@ -6,6 +6,8 @@ require 'yus/entity'
 require 'yus/session'
 require 'needle'
 
+VERSION = '1.0.0'
+
 module Yus
   class Server
     def initialize(persistence, config, logger)
