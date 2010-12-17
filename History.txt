@@ -1,0 +1,6 @@
+=== 1.0.0 / 17.12.2010
+
+* ywesee user server is not yet Ruby 1.9 ready.
+
+  * Birthday!
+
