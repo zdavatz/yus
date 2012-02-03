@@ -164,13 +164,12 @@ To run the tests you are gonna need
 
 == IMPORTANT
 
-  You should NOT install dbd-pg-0.3.x for the postgreSQL driver and
-  dbi-0.4.x, because it has already been known that the dbd-pg-0.3.x
-  depends on the library, deprecated-0.2.x, that causes an error.
+  emerge: ruby-dbi (0.4.3), pg (0.12.2), dbd-pg (0.3.9)
+ 
+  also see: http://dev.ywesee.com/wiki.php/Michal/DayTwo#dbi
 
-  ruby-dbi version via emerge that works is 0.2.0-r1
-
-  Install odba (from scm.ywesee.com)
+  gem install deprecated (2.0.1)
+  gem install odba
 
 == SETUP POSTGRES DB
 
