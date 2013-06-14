@@ -47,7 +47,7 @@ when 'odba'
   require 'odba/connection_pool'
   require 'odba/drbwrapper'
   DRb.install_id_conv ODBA::DRbIdConv.new
-  ODBA.storage.dbi = ODBA::ConnectionPool.new("DBI:pg:#{config.db_name}",
+  ODBA.storage.dbi = ODBA::ConnectionPool.new("DBI:Pg:#{config.db_name}",
                                              config.db_user, config.db_auth)
   ODBA.cache.setup
   persistence = Yus::Persistence::Odba.new
