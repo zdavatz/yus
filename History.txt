@@ -1,6 +1,10 @@
+=== 1.0.1 / 18.06.2013
+
+* Rename pg driver name to Pg
+  - pg(ruby-pg) gem expects 'Pg' (not 'pg')
+
 === 1.0.0 / 17.12.2010
 
 * ywesee user server is not yet Ruby 1.9 ready.
 
   * Birthday!
-

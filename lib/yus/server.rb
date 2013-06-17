@@ -6,7 +6,7 @@ require 'yus/entity'
 require 'yus/session'
 require 'needle'
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 module Yus
   class Server
