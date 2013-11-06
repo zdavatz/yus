@@ -3,64 +3,73 @@
 If you want to know why this software exists, please read the README file of
 ch.oddb.org at scm.ywesee.com
 
-yus is only running on Ruby1.8
+yus is only running under Ruby1.8 (Ruby 1.9 and 2.0 have problems in the gem needle which calls Threads.critical=)
+
+You must have a working installation of Ruby 1.8 and git.
+
+git clone https://github.com/zdavatz/yus.git
+cd yus
+gem install bundler          # unless you already have bundler installed
+bundle install
+bundle exec rake gem_install 
+
+# Setup the necessary configuration files. In this example we use
+# user_tom as username and domain.com as the domain-name.
+# He must be reachable by email via user_tom@domain.com
+# Please adapt this to your need!
+
+sudo mkdir -p /etc/yus/data/
 
 If you do not yet have a private key you will have to create one with 
 
-  ssh-keygen -t rsa
+  ssh-keygen -t rsa -f /etc/yus/user_tom
 
 do _not_ set a password for the key otherwise yus-server will always
-ask you for a password at startup-time. The password you set will be
-with the sha256.rb.
+ask you for a password at startup-time. You will set a password later
+using sha256.rb.
 
-Install the following packages with gem:
+ssh-keygen should have created the following two files
+  /etc/yus/data/user_tom.pub 
+  /etc/yus/data/user_tom
 
-  needle (1.3.0)
-  pg (0.9.0) 
-  postgres (0.7.9.2008.01.28)
+Create the file /etc/yus/data/user_tom.crt, by calling
 
-Install from source
+  openssl req -key /etc/yus/data/user_tom -out /etc/yus/data/user_tom.crt  -new -x509 -batch -passin pass:''
 
-  ruby-password (0.5.3)
+Determine the SHA256 value of the root_pass (password for the yus root user, in this example hatakeyama). We
+use the sha256.rb which is in the root of the yus checkout.
 
-Make sure you got the directory
+  ruby sha256.rb hatakeyama
+  
+Create the file /etc/yus/yus.yml with the following content (using the output of the previous command)
 
-  /etc/yus/
-  /etc/yus/data/
-
-with the files
-
-  /etc/yus/data/yus.crt  
-  /etc/yus/data/yus.key
-
-and also 
-
-  /etc/yus/yus.yml
-
-the content of the yaml-file should be
-
-  ---
-  root_name: email@domain.com
-  root_pass: 7322we3asalkasdfkjl9234kjljasd234234ljsdlfkasjw23235lajsdfwr3scv [the SHA2-hash of your password]
+---
+  root_name: user_tom@domain.com
+  root_pass: 48714061119f3bb753a0c63dd4230f641ab79e58eb603fc263925c53580acdf1 # [the SHA2-hash of your password]
   log_level: DEBUG
-  ssl_key: /etc/yus/data/yus.key [path to an rsa private key]
-  ssl_cert: /etc/yus/data/yus.crt [path to a ssl x509 certificate]
+  ssl_key:  /etc/yus/data/user_tom      # [path to an rsa private key]
+  ssl_cert: /etc/yus/data/user_tom.crt  # [path to a ssl x509 certificate]
   session_timeout: 3600
 
-To create root_pass do
+Setup the PostgresDB like this
 
-== Contents of the file
+  sudo -iHu postgres
+  psql -c "create user yus with password 'hatakeyama';"
+  psql -c "create database yus with encoding 'utf-8' template template0;"
+  psql -c "grant all privileges  on database yus to yus";
+  exit
 
-  cat sha256.rb
-  require 'digest/sha2'
-  print "password: ", ARGV[0], "\n"
-  print "SHA256 encoding: ",Digest::SHA256.hexdigest(ARGV[0]),"\n"
+Verify that you have a line in you postgres /etc/postgresql-<veryion>/pg_hba.conf like the following
+  local   all         all                               trust
+
+If not you will get errors like this 'FATAL:  Peer authentication failed for user "yus" (DBI::OperationalError)' while verifying
+that you can connect to your new postgres database yus as user yus. When asked for the password answer with hatakeyama
+
+  psql --user=yus --host=localhost --password yus -c '\dT'
   
-== For better understanding
+Now you should be able to start the yus-daemon
 
-  ruby sha256.rb hatakeyama [sha256.rb is in the source you can use that].
-  password: hatakeyama
-  SHA256 encoding: 48714061119f3bb753a0c63dd4230f641ab79e58eb603fc263925c53580acdf1
+  bin/yusd &
 
 == Note
 
@@ -74,20 +83,13 @@ To create root_pass do
       starts. root_pass and ssl_key are independent from each other. The password does
       not have to be the same.
 
-Then you should paste the enconding password in 'root-pass' of
-
-  /etc/yus/yus.yml 
-
-for the yus server setup. When you start the yus server or you use yus admin
-commands, the server asks you for the password.
-
-for id_rsa.crt
-  
-* openssl req -new -x509 -key .ssh/id_rsa -out .ssh/id_rsa.crt
-
 Create a new user with
 
-  yus_add_user email@domain.com login org.oddb.RootUser
+  yus_add_user user_tom@domain.com login org.oddb.RootUser
+
+Verify that everthings is okay by calling
+
+  yus_show user_tom@domain.com
 
 == NOTE
 
@@ -108,12 +110,8 @@ Create a new user with
   >      end
   >    }
   >  end
-
-If you create a new user you have to make sure that
-
-  bin/yusd
-
-is running. Then you have to grant 
+  
+Then you have to grant 
 
   yus_grant zdavatz@ywesee.com edit yus.entities  
 
@@ -158,28 +156,17 @@ For installing extensive user privileges for ch.oddb.org you need to do the foll
   > become gray. The other box can be checked, but
   > as a default of RootUser, the three privileges are checked.
 
-To run the tests you are gonna need
+To run the tests you call
 
-  flexmock (0.8.6)
+  bundle install
+  bundle exec rake test
 
-== IMPORTANT
+== The setup is explained by
 
-  emerge: ruby-dbi (0.4.3), pg (0.12.2), dbd-pg (0.3.9)
- 
-  also see: http://dev.ywesee.com/wiki.php/Michal/DayTwo#dbi
+* Masa in http://dev.ywesee.com/wiki.php/Masa/20101019-debug-importGkv#SetYus
+* Michal in http://dev.ywesee.com/wiki.php/Michal/DayTwo#dbi
+* Niklaus using a vagrant/puppet setup. See https://github.com/ngiger/vagrant-oddb_org
 
-  gem install deprecated (2.0.1)
-  gem install odba
+There exists a template to create the files under /etc/yus. Have a look at 
 
-== SETUP POSTGRES DB
-
-  su - postgres
-  createuser yus
-  createdb yus
-  exit
-  cd [yus-git-reposito]
-  ruby bin/yusd
-
-== MASA setup
-
-* http://dev.ywesee.com/wiki.php/Masa/20101019-debug-importGkv#SetYus
+* https://github.com/ngiger/vagrant-oddb_org/blob/master/static-modules/oddb_org/templates/yus_grant_user.rb.erb
