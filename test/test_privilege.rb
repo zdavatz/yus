@@ -3,11 +3,12 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'yus/privilege'
 
 module Yus
-  class TestPrivilege < Test::Unit::TestCase
+  class TestPrivilege <Minitest::Test
     def setup
       @privilege = Privilege.new
     end

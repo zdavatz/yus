@@ -3,7 +3,8 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
-require 'test/unit'
+gem "minitest"
+require "minitest/autorun"
 require 'flexmock'
 require 'yus/session'
 require 'digest/sha2'
@@ -12,7 +13,7 @@ module Yus
   class Session
     public :touch!
   end
-  class TestAutoSession < Test::Unit::TestCase
+  class TestAutoSession < Minitest::Test
     def setup
       @config = FlexMock.new
       @config.should_receive(:session_timeout).and_return { 0.5 }
@@ -41,9 +42,7 @@ module Yus
       }
       @persistence.should_receive(:find_entity, 1).times(1).and_return { user }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_entity_preference('name', 'preference_key', 'domain')
-      }
+      res = @session.get_entity_preference('name', 'preference_key', 'domain')
       assert_nil(res)
     end
     def test_get_entity_preference__success
@@ -55,9 +54,7 @@ module Yus
       }
       @persistence.should_receive(:find_entity, 1).times(1).and_return { user }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_entity_preference('name', 'preference_key', 'domain')
-      }
+      res = @session.get_entity_preference('name', 'preference_key', 'domain')
       assert_equal('value', res)
     end
     def test_get_entity_preferences__no_user
@@ -75,9 +72,7 @@ module Yus
       }
       @persistence.should_receive(:find_entity, 1).times(1).and_return { user }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_entity_preferences('name', ['preference_key'], 'domain')
-      }
+      res = @session.get_entity_preferences('name', ['preference_key'], 'domain')
       assert_equal({'preference_key' => nil}, res)
     end
     def test_get_entity_preferences__success
@@ -89,9 +84,7 @@ module Yus
       }
       @persistence.should_receive(:find_entity, 1).times(1).and_return { user }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_entity_preferences('name', ['preference_key'], 'domain')
-      }
+      res = @session.get_entity_preferences('name', ['preference_key'], 'domain')
       assert_equal({'preference_key' => 'value'}, res)
     end
     def test_set_entity_preference__no_user
@@ -200,9 +193,7 @@ module Yus
       @persistence.should_receive(:save_entity, 1).times(1).and_return { |entity|
         assert_equal(user, entity)
       }
-      assert_nothing_raised {
-        @session.reset_entity_password('name', 'token', 'password')
-      }
+      @session.reset_entity_password('name', 'token', 'password')
     end
     def test_grant__no_user
       @persistence.should_receive(:find_entity).and_return { |name|
@@ -229,7 +220,7 @@ module Yus
       @session.grant('username', 'action', 'key')
     end
   end
-  class TestEntitySession < Test::Unit::TestCase
+  class TestEntitySession < Minitest::Test
     def setup
       @config = FlexMock.new
       @config.should_receive(:session_timeout).and_return { 0.5 }
@@ -317,9 +308,7 @@ module Yus
         true
       }
       @persistence.should_receive(:entities).and_return { [] }
-      assert_nothing_raised { 
-        assert_equal([], @session.entities)
-      }
+      assert_equal([], @session.entities)
     end
     def test_find_entity__not_allowed
       @user.should_receive(:allowed?).and_return { |action, key|
@@ -787,9 +776,7 @@ module Yus
         nil
       }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_preference('preference_key')
-      }
+      res = @session.get_preference('preference_key')
       assert_nil(res)
     end
     def test_get_entity_preference__success
@@ -799,16 +786,14 @@ module Yus
         'value'
       }
       res = nil
-      assert_nothing_raised {
-        res = @session.get_preference('preference_key')
-      }
+      res = @session.get_preference('preference_key')
       assert_equal('value', res)
     end
     def test_ping
       assert_equal(true, @session.ping)
     end
   end
-  class TestRootSession < Test::Unit::TestCase
+  class TestRootSession < Minitest::Test
     def setup
       @config = FlexMock.new
       @config.should_receive(:session_timeout).and_return { 0.5 }

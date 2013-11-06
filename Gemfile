@@ -16,8 +16,12 @@ gem 'dbd-pg'
 gem 'deprecated', '2.0.1'
 
 group :development, :test do
-  gem 'flexmock', '0.8.6'
+  gem 'flexmock'
   gem 'rake'
-  gem 'minitest'
+  gem 'minitest', '>=5.0.0'
   gem 'hoe'
+end
+
+group :development do
+  gem 'pry-debugger'
 end

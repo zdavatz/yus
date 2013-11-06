@@ -4,11 +4,12 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
-require 'test/unit'
+gem 'minitest'
+require 'minitest/autorun'
 require 'yus/entity'
 
 module Yus
-  class TestEntity < Test::Unit::TestCase
+  class TestEntity <Minitest::Test
     def setup
       @user = Entity.new('user')
     end
@@ -58,15 +59,11 @@ module Yus
       group1 = Entity.new('A Group')
       group2 = Entity.new('Another Group')
       assert_equal([], @user.affiliations)
-      assert_nothing_raised {
-        @user.join(group1)
-      }
+      @user.join(group1)
       assert_raises(CircularAffiliationError) {
         group1.join(@user) 
       }
-      assert_nothing_raised {
-        group1.join(group2)
-      }
+      group1.join(group2)
       assert_raises(CircularAffiliationError) {
         group2.join(@user) 
       }

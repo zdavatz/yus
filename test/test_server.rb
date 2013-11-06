@@ -3,7 +3,6 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
-require 'test/unit'
 require 'yus/server'
 require 'flexmock'
 
@@ -11,7 +10,7 @@ module Yus
   class Server
     public :authenticate, :clean
   end
-  class TestServer < Test::Unit::TestCase
+  class TestServer < Minitest::Test
     def setup
       @config = FlexMock.new
       @config.should_receive(:cleaner_interval).and_return { 100000000 }
@@ -50,10 +49,8 @@ module Yus
         true 
       }
       @persistence.should_receive(:find_entity).times(1).and_return { user }
-      assert_nothing_raised {
-        result = @server.authenticate('name', 'password')
-        assert_equal(user, result)
-      }
+      result = @server.authenticate('name', 'password')
+      assert_equal(user, result)
     end
     def test_autosession
       @server.autosession('domain') { |session|
@@ -74,12 +71,10 @@ module Yus
       }
       @persistence.should_receive(:find_entity).times(1).and_return { user }
       @persistence.should_receive(:save_entity).times(1) 
-      assert_nothing_raised {
-        session = @server.login('name', 'password', 'domain')
-        assert_instance_of(EntitySession, session)
-        assert_kind_of(DRb::DRbUndumped, session)
-        assert_equal([session], @server.instance_variable_get('@sessions'))
-      }
+      session = @server.login('name', 'password', 'domain')
+      assert_instance_of(EntitySession, session)
+      assert_kind_of(DRb::DRbUndumped, session)
+      assert_equal([session], @server.instance_variable_get('@sessions'))
     end
     def test_logout
       needle = FlexMock.new
@@ -110,7 +105,7 @@ module Yus
       assert_equal([], sessions)
     end
   end
-  class TestServerCleaner < Test::Unit::TestCase
+  class TestServerCleaner < Minitest::Test
     def test_autoclean
       config = FlexMock.new
       config.should_receive(:cleaner_interval).and_return { 0.5 }
