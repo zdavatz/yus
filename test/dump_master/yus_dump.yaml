@@ -1,0 +1,53 @@
+--- !ruby/object:MockPersistence 
+entities: 
+  a_yus_group: &id001 !ruby/object:Yus::Entity 
+    affiliations: []
+
+    last_logins: {}
+
+    name: a_yus_group
+    preferences: {}
+
+    privileges: 
+      set_password: !ruby/object:Yus::Privilege 
+        items: 
+          a_yus_group: :never
+    tokens: {}
+
+    valid_from: 2014-10-01 09:41:59.892694 +02:00
+    valid_until: entity_pass
+  second_name: !ruby/object:Yus::Entity 
+    affiliations: []
+
+    last_logins: {}
+
+    name: second_name
+    preferences: {}
+
+    privileges: 
+      set_password: !ruby/object:Yus::Privilege 
+        items: 
+          second_name: :never
+    tokens: {}
+
+    valid_from: 2014-10-01 09:41:59.892556 +02:00
+    valid_until: entity_pass
+  entity_name: !ruby/object:Yus::Entity 
+    affiliations: 
+    - *id001
+    last_logins: {}
+
+    name: entity_name
+    preferences: {}
+
+    privileges: 
+      set_password: !ruby/object:Yus::Privilege 
+        items: 
+          entity_name: :never
+      action: !ruby/object:Yus::Privilege 
+        items: 
+          key: :never
+    tokens: {}
+
+    valid_from: 2014-10-01 09:41:59.892408 +02:00
+    valid_until: entity_pass
