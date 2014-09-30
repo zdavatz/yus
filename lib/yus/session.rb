@@ -270,8 +270,10 @@ module Yus
       super(needle)
     end
     def allowed?(*args)
-      debug("allowed?(#{args.join(', ')})")
-      @user.allowed?(*args)
+      res = @user.allowed?(*args)
+      debug("allowed?(#{args.join(', ')}) returns #{res}")
+      # @user.allowed?(*args)
+      res
     end
     def name
       @user.name
