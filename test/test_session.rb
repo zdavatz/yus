@@ -8,6 +8,8 @@ require "minitest/autorun"
 require 'flexmock'
 require 'yus/session'
 require 'digest/sha2'
+require 'fileutils'
+require File.expand_path(File.dirname(__FILE__)+'/helpers.rb')
 
 module Yus
   class Session
@@ -221,15 +223,22 @@ module Yus
     end
   end
   class TestEntitySession < Minitest::Test
+    HexDigestSample = 'cleartext'
     def setup
-      @config = FlexMock.new
+      @config = FlexMock.new('config')
       @config.should_receive(:session_timeout).and_return { 0.5 }
-      @user = FlexMock.new
-      @persistence = FlexMock.new
-      @logger = FlexMock.new
+      @config.should_receive(:token_lifetime).and_return { 0.2 }
+      @digest = FlexMock.new('digest')
+      @digest.should_receive(:hexdigest).and_return { HexDigestSample }
+      @config.should_receive(:digest).by_default.and_return {@digest}
+      @user = FlexMock.new('user')
+      @user.should_receive(:set_token).and_return { 'set_token' }
+      @persistence = FlexMock.new('persistence')
+      @persistence.should_receive(:save_entity)
+      @logger = FlexMock.new('logger')
       @logger.should_receive(:info).and_return {}
       @logger.should_receive(:debug).and_return {}
-      @needle = FlexMock.new
+      @needle = FlexMock.new('needle')
       @needle.should_receive(:persistence).and_return { @persistence }
       @needle.should_receive(:config).and_return { @config }
       @needle.should_receive(:logger).and_return { @logger }
@@ -272,6 +281,10 @@ module Yus
         assert_equal('name', entity.name)
       }
       @session.create_entity('name')
+    end
+    def test_generate_token
+      assert_equal(false, @session.expired?)
+      assert_equal(HexDigestSample, @session.generate_token)
     end
     def test_create_entity__duplicate
       @user.should_receive(:allowed?).and_return { |action, key|
@@ -795,16 +808,16 @@ module Yus
   end
   class TestRootSession < Minitest::Test
     def setup
-      @config = FlexMock.new
+      @config = FlexMock.new('config')
       @config.should_receive(:session_timeout).and_return { 0.5 }
-      @persistence = FlexMock.new
-      @logger = FlexMock.new
+      @needle = FlexMock.new('needle')
+      @persistence = MockPersistence.new
+      @logger = FlexMock.new('logger')
       @logger.should_receive(:info).and_return {}
-      @logger.should_receive(:debug).and_return {}
-      @needle = FlexMock.new
       @needle.should_receive(:persistence).and_return { @persistence }
-      @needle.should_receive(:config).and_return { @config }
-      @needle.should_receive(:logger).and_return { @logger }
+      @needle.should_receive(:logger).and_return { @logger }.by_default
+      @needle.should_receive(:config).and_return { @config }.by_default
+      @config.should_receive(:session_timeout).and_return { 0.5 }
       @session = RootSession.new(@needle)
     end
     def test_valid
@@ -816,6 +829,65 @@ module Yus
     def test_name
       @config.should_receive(:root_name).and_return { 'root_name' }
       assert_equal('root_name', @session.name)
+    end
+    def test_delete_entity
+      entity_name = 'entity_name'
+      entity = @session.create_entity(entity_name, 'entity_pass')
+      assert_equal(entity, @session.find_entity(entity_name))
+      @session.delete_entity(entity_name)
+      assert_nil(@session.find_entity(entity_name))
+    end
+    def test_last_login
+      entity_name = 'entity_name'
+      entity = @session.create_entity(entity_name, 'entity_pass')
+      domain = 'domain'
+      entity.login(domain)
+      assert_equal(entity, @session.find_entity(entity_name))
+      #require 'pry'; binding.pry
+      assert_in_delta(Time.now.to_f, @session.last_login(entity_name, domain).to_f)
+    end
+    def test_show
+      assert_raises(UnknownEntityError) {
+        @session.show('unkown_name')
+      }
+      entity_name = 'entity_name'
+      entity = @session.create_entity(entity_name, 'entity_pass')
+      assert_kind_of(String, @session.show(entity_name))
+      assert(@session.show(entity_name).index(entity_name) > 0)
+    end
+    def test_export
+      assert_raises(UnknownEntityError) {
+        @session.show('unkown_name')
+      }
+      entity_name   = 'entity_name'
+      entity_name2  = 'second_name'
+      password      = 'entity_pass'
+      groupname     = 'a_yus_group'
+      entity  = @session.create_entity(entity_name, password)
+      entity2 = @session.create_entity(entity_name2, password)
+      group   = @session.create_entity(groupname, password)
+      assert_kind_of(String, @session.show(entity_name))
+      assert(@session.show(entity_name).index(entity_name) > 0)
+      assert(@session.show(entity_name2).index(entity_name2) > 0)
+      @session.affiliate(entity_name, groupname)
+      @session.grant(entity_name, 'action', 'key')
+
+      @needle = FlexMock.new('needle')
+      @needle.should_receive(:persistence).and_return { @persistence }
+      @needle.should_receive(:config).and_return { @config }
+      @needle.should_receive(:logger).and_return { @logger }
+      tmpdir = File.expand_path(File.join(__FILE__, '../tmp'))
+      FileUtils.mkdir_p(tmpdir)
+      outFile = File.join(tmpdir, 'yus_dump.yaml')
+      @session.dump_to_yaml(outFile)
+      assert(File.exists?(outFile))
+      assert(File.size(outFile) > 0)
+      dump_content = IO.read(outFile)
+      puts "#{outFile} is #{File.size(outFile)} bytes lang and contains \n#{dump_content}"
+      refute_nil(dump_content)
+      refute_nil(dump_content.index(entity_name))
+#      FileUtils.rm_rf(tmpdir)
+      skip("Tests saving preferences")
     end
   end
 end
