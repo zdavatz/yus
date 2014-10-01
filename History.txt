@@ -1,3 +1,10 @@
+=== 1.0.2 / 01.10.2014
+
+* Added bin/yus_dump to dump yus-database into data/yus_dump.yml
+* Added concerned user and result when logging allowed?
+* Improved unit-tests
+* Made travis-ci pass for 1.8.7 and 2.1.2
+
 === 1.0.1 / 18.06.2013
 
 * Rename pg driver name to Pg
