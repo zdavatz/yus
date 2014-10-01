@@ -232,6 +232,7 @@ module Yus
       @config.should_receive(:digest).by_default.and_return {@digest}
       @user = FlexMock.new('user')
       @user.should_receive(:set_token).and_return { 'set_token' }
+      @user.should_receive(:name).and_return { 'name' }
       @persistence = FlexMock.new('persistence')
       @persistence.should_receive(:save_entity)
       @logger = FlexMock.new('logger')
