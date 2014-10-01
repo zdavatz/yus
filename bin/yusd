@@ -2,6 +2,7 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
+require 'rubygems' if RUBY_VERSION.match('1.8.6')
 require 'rclconf'
 require 'logger'
 require 'drb'
