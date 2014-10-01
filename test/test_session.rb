@@ -854,39 +854,55 @@ module Yus
       assert_kind_of(String, @session.show(entity_name))
       assert(@session.show(entity_name).index(entity_name) > 0)
     end
-    def test_export
+
+    def setup_for_dump
       assert_raises(UnknownEntityError) {
         @session.show('unkown_name')
       }
-      entity_name   = 'entity_name'
+      @entity_name  = 'entity_name'
       entity_name2  = 'second_name'
       password      = 'entity_pass'
       groupname     = 'a_yus_group'
-      @session.create_entity(entity_name, password)
+      @session.create_entity(@entity_name, password)
       @session.create_entity(entity_name2, password)
       @session.create_entity(groupname, password)
-      assert_kind_of(String, @session.show(entity_name))
-      assert(@session.show(entity_name).index(entity_name) > 0)
+      assert_kind_of(String, @session.show(@entity_name))
+      assert(@session.show(@entity_name).index(@entity_name) > 0)
       assert(@session.show(entity_name2).index(entity_name2) > 0)
-      @session.affiliate(entity_name, groupname)
-      @session.grant(entity_name, 'action', 'key')
+      @session.affiliate(@entity_name, groupname)
+      @session.grant(@entity_name, 'action', 'key')
 
       @needle = FlexMock.new('needle')
       @needle.should_receive(:persistence).and_return { @persistence }
       @needle.should_receive(:config).and_return { @config }
       @needle.should_receive(:logger).and_return { @logger }
+    end
+
+    def test_dump_to_named_yaml
+      setup_for_dump
       tmpdir = File.expand_path(File.join(__FILE__, '../tmp'))
-      FileUtils.mkdir_p(tmpdir)
       outFile = File.join(tmpdir, 'yus_dump.yaml')
-      @session.dump_to_yaml(outFile)
-      assert(File.exists?(outFile))
+      assert(@session.dump_to_yaml(outFile))
+      assert(File.exist?(outFile))
       assert(File.size(outFile) > 0)
       dump_content = IO.read(outFile)
       # puts "#{outFile} is #{File.size(outFile)} bytes lang and contains \n#{dump_content}"
       refute_nil(dump_content)
-      refute_nil(dump_content.index(entity_name))
+      refute_nil(dump_content.index(@entity_name))
       FileUtils.rm_rf(tmpdir)
       skip("Tests saving preferences")
+    end
+
+    def test_dump_to_default
+      setup_for_dump
+      assert(@session.dump_to_yaml)
+      outFile = File.expand_path(File.join(__FILE__, '..', '..', 'data', 'yus_dump.yml'))
+      assert(File.exist?(outFile), "outfile #{outFile} should exist")
+      assert(File.size(outFile) > 0)
+      dump_content = IO.read(outFile)
+      # puts "#{outFile} is #{File.size(outFile)} bytes lang and contains \n#{dump_content}"
+      refute_nil(dump_content)
+      refute_nil(dump_content.index(@entity_name))
     end
   end
 end

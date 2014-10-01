@@ -33,8 +33,26 @@ module Yus
       }
       touch!
     end
-    def dump_to_yaml(yaml_name)
-      File.open(yaml_name, 'w') { |f| YAML.dump(@needle.persistence, f) }
+    def dump_to_yaml(yaml_name=nil)
+      yaml_name ||= File.expand_path(File.join(__FILE__, '..', '..', '..', 'data', 'yus_dump.yml'))
+      FileUtils.makedirs(File.dirname(yaml_name))
+      if entities.is_a?(Hash) # when running unit tests, where MockPersistence uses a Hash
+        File.open(yaml_name, 'w') { |f| YAML.dump(@needle.persistence, f) }
+      else
+        File.open(yaml_name, 'w') {
+          |fh|
+              ids = entities.collect { |item| item.odba_id }
+              ids.each { |odba_id|
+              begin
+                yaml = YAML.dump(ODBA.cache.fetch(odba_id, nil))
+                fh.puts yaml
+                fh.puts
+              rescue
+              end
+            }
+        }
+        info "dumped #{entities.size} entities to #{yaml_name}"
+      end
     end
     def create_entity(name, valid_until=nil, valid_from=Time.now)
       info("create_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")

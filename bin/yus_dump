@@ -20,15 +20,7 @@ GetoptLong.new(
   opts.push(pair.join('=')[2..-1])
 }
 
-filename = ARGV
-
-unless(filename)
-	puts <<-EOS
-Usage: yus_dump filename
-  dumps yus database to a yaml file
-	EOS
-  exit
-end
+filename = ARGV.first
 
 default_dir = File.join(ENV['HOME'], '.yus')
 default_config_files = [
