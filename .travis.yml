@@ -7,7 +7,7 @@ before_install:
 # see http://docs.seattlerb.org/minitest/ (Install)
 before_script:
   - gem install minitest
-  - bundle install
+  - bundle install --without debugger
 
 script:
   - rake test

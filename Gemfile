@@ -22,6 +22,6 @@ group :development, :test do
   gem 'hoe'
 end
 
-group :development do
+group :debugger do
   gem 'pry-debugger'
 end
