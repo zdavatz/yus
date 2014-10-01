@@ -2,11 +2,7 @@ language: ruby
 before_install:
   - gem install bundler
 
-# we install minitest via  gem install and not bundle install
-# because Ruby 1.9/2.0 seem to mess up the rubygems installation
-# see http://docs.seattlerb.org/minitest/ (Install)
 before_script:
-  - gem install minitest
   - bundle install --without debugger
 
 script:
@@ -23,3 +19,4 @@ rvm:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: 1.9.3

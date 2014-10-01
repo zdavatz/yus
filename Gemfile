@@ -23,5 +23,9 @@ group :development, :test do
 end
 
 group :debugger do
-  gem 'pry-debugger'
+  if /^2/.match(RUBY_VERSION)
+    gem 'pry-byebug'
+  elsif /^1\.9/.match(RUBY_VERSION)
+    gem 'pry-debugger'
+  end
 end
