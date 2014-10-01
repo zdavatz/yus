@@ -7,7 +7,7 @@ gem 'pg'
 gem 'dbi', '0.4.5', :git => 'https://github.com/zdavatz/ruby-dbi'
 
 # for running yus_add we need
-gem 'ruby-password'
+# gem 'ruby-password' # but this cannot be installed on travis-ci for ruby 1.8.7
 gem 'rclconf'
 
 # for running yusd we need

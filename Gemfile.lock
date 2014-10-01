@@ -20,9 +20,6 @@ GEM
     pg (0.17.0)
     rake (10.1.0)
     rclconf (1.0.0)
-    ruby-password (0.15.5)
-      ruby-termios
-    ruby-termios (0.9.6)
 
 PLATFORMS
   ruby
@@ -39,4 +36,3 @@ DEPENDENCIES
   pg
   rake
   rclconf
-  ruby-password
