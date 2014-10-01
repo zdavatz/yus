@@ -292,8 +292,7 @@ module Yus
     end
     def allowed?(*args)
       res = @user.allowed?(*args)
-      debug("allowed?(#{args.join(', ')}) returns #{res}")
-      # @user.allowed?(*args)
+      debug("#{@user.name} allowed?(#{args.join(', ')}) returns #{res}")
       res
     end
     def name
