@@ -3,7 +3,6 @@
 
 $: << File.expand_path('../lib', File.dirname(__FILE__))
 
-gem "minitest"
 require "minitest/autorun"
 require 'flexmock'
 require 'yus/session'

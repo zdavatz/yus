@@ -16,16 +16,13 @@ gem 'dbd-pg'
 gem 'deprecated', '2.0.1'
 
 group :development, :test do
-  gem 'flexmock'
+  gem 'flexmock', '~>1.3.0'
   gem 'rake'
-  gem 'minitest', '>=5.0.0'
+  gem 'test-unit'
+  gem 'minitest'
   gem 'hoe'
 end
 
 group :debugger do
-  if /^2/.match(RUBY_VERSION)
-    gem 'pry-byebug'
-  elsif /^1\.9/.match(RUBY_VERSION)
-    gem 'pry-debugger'
-  end
+  gem 'pry-byebug'
 end
