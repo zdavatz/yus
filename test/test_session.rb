@@ -891,7 +891,6 @@ module Yus
       refute_nil(dump_content)
       refute_nil(dump_content.index(@entity_name))
       FileUtils.rm_rf(tmpdir)
-      skip("Tests saving preferences")
     end
 
     def test_dump_to_default
