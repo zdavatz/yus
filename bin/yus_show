@@ -8,6 +8,7 @@ require 'drb/ssl'
 require 'password'
 require 'rclconf'
 require 'yus/session'
+require 'yus/helpers'
 require 'getoptlong'
 
 opts = []
@@ -19,12 +20,12 @@ GetoptLong.new(
   ['--yus_dir', '-d', GetoptLong::REQUIRED_ARGUMENT],
   ['--recursive', '-R', GetoptLong::NO_ARGUMENT]
 ).each { |key, value|
-	case key
-	when '--recursive'
-		recursive = true
-	else
-		opts.push([key, value].join('=')[2..-1])
-	end
+  case key
+  when '--recursive'
+    recursive = true
+  else
+    opts.push("#{key}=#{value}")
+  end
 }
 
 name = ARGV.first
@@ -35,32 +36,6 @@ Usage: yus_show <username>
 	EOS
   exit
 end
-
-default_dir = File.join(ENV['HOME'], '.yus')
-default_config_files = [
-  File.join(default_dir, 'yus.yml'),
-  '/etc/yus/yus.yml',
-]
-defaults = {
-  'config'			      => default_config_files,
-  'root_name'         => 'admin',
-  'server_url'        => 'drbssl://localhost:9997',
-  'yus_dir'           => default_dir,
-}
-
-config = RCLConf::RCLConf.new(opts, defaults)
-config.load(config.config)
-
-server = DRb::DRbObject.new(nil, config.server_url)
-server.ping
-
-session = nil
-begin
-  pass = Password.get("Password for #{config.root_name}: ")
-  session = server.login(config.root_name, pass.to_s, 'commandline')
-rescue Yus::YusError => e
-  puts e.message
-  retry
-end
+session = YUS.session
 
 puts session.show(name, recursive)

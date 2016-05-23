@@ -1,0 +1,172 @@
+From 2fc902ee538f96ff9f87920b63bd1a1bb7d2f9f5 Mon Sep 17 00:00:00 2001
+From: Niklaus Giger <ngiger@ywesee.com>
+Date: Wed, 23 Dec 2015 10:45:48 +0100
+Subject: [PATCH] Added support for running yus via docker
+
+Signed-off-by: Niklaus Giger <ngiger@ywesee.com>
+---
+ .gitignore         |  2 ++
+ .travis.yml        |  2 +-
+ Dockerfile         | 10 ++++++++++
+ Gemfile            |  1 -
+ bin/yusd           |  3 ++-
+ docker-compose.yml | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ test/yus_demo.yml  | 17 +++++++++++++++++
+ 7 files changed, 81 insertions(+), 3 deletions(-)
+ create mode 100644 Dockerfile
+ create mode 100644 docker-compose.yml
+ create mode 100644 test/yus_demo.yml
+
+diff --git a/.gitignore b/.gitignore
+index 97709c1..fa3d1eb 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,5 @@
+ .bundle/
+ vendor/
+ pkg/
++coverage
++.ruby-version
+diff --git a/.travis.yml b/.travis.yml
+index 3641b02..e71a651 100644
+--- a/.travis.yml
++++ b/.travis.yml
+@@ -5,7 +5,7 @@ before_install:
+ bundler_args: --without debugger
+ 
+ script:
+-  - rake test
++  - bundle exec rake test
+ 
+ notifications:
+   email:
+diff --git a/Dockerfile b/Dockerfile
+new file mode 100644
+index 0000000..c8108ea
+--- /dev/null
++++ b/Dockerfile
+@@ -0,0 +1,10 @@
++FROM ruby:2.2.4-onbuild
++CMD ["bundle", "exec", "bin/yusd"]
++
++# RUN apt-get update &&  apt-get -y install postgresql-client-9.4
++
++# The names for pgTest => db_host, yus_data => db_name must be in sync between
++# docker-compose.yml, test/yus_demo.yml and Dockerfile
++COPY 'test/yus_demo.yml' '/etc/yus/yus.yml'
++COPY 'bin/yusd' '/usr/src/app/bin/yusd'
++
+diff --git a/Gemfile b/Gemfile
+index 08dd1ab..3ec57ca 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -1,7 +1,6 @@
+ source "http://rubygems.org"
+ 
+ gem 'needle'
+-#gem 'pg', '0.9.0'
+ gem 'pg'
+ # we have some important patches here!!
+ gem 'dbi', '0.4.5', :git => 'https://github.com/zdavatz/ruby-dbi'
+diff --git a/bin/yusd b/bin/yusd
+index ce4e6dd..c7c15d7 100755
+--- a/bin/yusd
++++ b/bin/yusd
+@@ -18,6 +18,7 @@ default_config_files = [
+ defaults = {
+   'cleaning_interval' =>  300,
+   'config'			      => default_config_files,
++  'db_host'           => 'localhost',
+   'db_name'           => 'yus',
+   'db_user'           => 'yus',
+   'db_auth'           => 'yus',
+@@ -48,7 +49,7 @@ when 'odba'
+   require 'odba/connection_pool'
+   require 'odba/drbwrapper'
+   DRb.install_id_conv ODBA::DRbIdConv.new
+-  ODBA.storage.dbi = ODBA::ConnectionPool.new("DBI:Pg:#{config.db_name}",
++  ODBA.storage.dbi = ODBA::ConnectionPool.new("DBI:Pg:#{config.db_name}:#{config.db_host}",
+                                              config.db_user, config.db_auth)
+   ODBA.cache.setup
+   persistence = Yus::Persistence::Odba.new
+diff --git a/docker-compose.yml b/docker-compose.yml
+new file mode 100644
+index 0000000..5ba3196
+--- /dev/null
++++ b/docker-compose.yml
+@@ -0,0 +1,49 @@
++# Copyright (c) 2015 by Niklaus Giger ngiger@ywesee.com
++#
++# This file is part of oddb-docker.
++#
++# oddb-docker is free software: you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation, either version 3 of the License, or
++# (at your option) any later version.
++#
++# oddb-docker is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with oddb-docker.  If not, see <http://www.gnu.org/licenses/>.
++#
++# # This is a setup for running tests
++# Security is not really a concern!
++#
++
++YusData:
++  image: postgres:9.4
++  entrypoint: /bin/bash
++
++# The names for pgTest => db_host, yus_data => db_name must be in sync between
++# docker-compose.yml, test/yus_demo.yml and Dockerfile
++pgTest:
++  image: postgres:9.4
++  volumes_from:
++    - YusData
++  environment:
++    POSTGRES_USER: yus
++    POSTGRES_PASSWORD: yus
++    POSTGRES_DB: yus_data
++yustest:
++  build: .
++  volumes:
++    - /home/docker-data-containers/yus-test:/var/yus_home
++  ports:
++  # by defaul yus run on port 9997, could by overriden by /etc/yus/yus.ml or $HOME/.yus/yus.yml
++    - "9997:9997"
++  links:
++    - pgTest
++  environment:
++    PGHOST: pgTest
++    PGUSER: yus
++    PGPASSWORD: yus
++    PGDATABASE: yus_data
+diff --git a/test/yus_demo.yml b/test/yus_demo.yml
+new file mode 100644
+index 0000000..cf90f6c
+--- /dev/null
++++ b/test/yus_demo.yml
+@@ -0,0 +1,17 @@
++---
++# This is a demo setup for running yus inside a docker
++#root_name: zdavatz@ywesee.com
++#root_pass: 0fdcf7ceb36d7b6057c144e676133c8f0aff1490cc0e7f5470f6ae503d3b8878
++root_name: ngiger@ywesee.com
++#root_pass: 0fdcf7ceb36d7b6057c144e676133c8f0aff1490cc0e7f5470f6ae503d3b8878
++# root_pass for 1234
++root_pass: 03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4
++log_level: DEBUG
++ssl_key: /etc/yus/data/yus.key
++ssl_cert: /etc/yus/data/yus.crt
++session_timeout: 3600
++
++# The names for pgTest => db_host, yus_data => db_name must be in sync between
++# docker-compose.yml, test/yus_demo.yml and Dockerfile
++db_host: pgTest
++db_name: yus_data
+-- 
+2.1.4
+

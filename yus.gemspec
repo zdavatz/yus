@@ -27,13 +27,13 @@ Gem::Specification.new do |spec|
   spec.add_dependency "pg", '0.17.0'
   spec.add_dependency "ydbi", '>= 0.5.1'
   spec.add_dependency 'rclconf'
-  # for running yus_add we need
-  spec.add_runtime_dependency  'ruby-password'
   spec.add_dependency 'odba'
+
   spec.add_runtime_dependency "ydbd-pg", '>= 0.5.1'
+  spec.add_runtime_dependency 'highline'
   spec.add_dependency 'deprecated', '2.0.1'
-    spec.add_development_dependency "test-unit"
-    spec.add_development_dependency "minitest"
+  spec.add_development_dependency "test-unit"
+  spec.add_development_dependency "minitest"
   if RUBY_VERSION.to_f > 2.0
     spec.add_development_dependency "pry-byebug"
   end

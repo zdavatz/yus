@@ -1,0 +1,46 @@
+FROM debian:8.2
+
+RUN apt-get update && apt-get install -y git locales-all curl
+ENV LANG en_US.utf8
+
+# Install packages for building ruby
+RUN apt-get install -y --force-yes build-essential curl git
+RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev
+
+# Install rbenv and ruby-build
+RUN adduser --shell /bin/bash yus
+ENV HOME /home/yus
+WORKDIR /home/yus
+USER yus
+RUN pwd
+RUN git clone https://github.com/sstephenson/rbenv.git $HOME/.rbenv
+RUN git clone https://github.com/rbenv/ruby-build.git $HOME/.rbenv/plugins/ruby-build
+# RUN $HOME/.rbenv/plugins/ruby-build/install.sh
+ENV PATH $HOME/.rbenv/bin:$PATH
+# RUN echo 'eval "$(rbenv init -)"' >> /etc/profile.d/rbenv.sh # or /etc/profile
+RUN echo 'eval "$(rbenv init -)"' >> .bashrc
+
+RUN rbenv install 2.2.3
+USER root
+# RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+USER yus
+RUN rbenv versions && rbenv rehash
+RUN echo 'gem: --no-rdoc --no-ri' >> .gemrc
+RUN echo $PATH and && rbenv local 2.2.3
+
+RUN grep yus /etc/passwd && cat .bashrc
+RUN echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+RUN echo echo bin in bashr `type rbenv`>> .bashrc
+# The docker run command always call /bin/sh which is by default dash and not bash
+# Also the initialization code is also different and not the same as after a using a login shell
+# Therefore prependend all calls that use rbenv commands with
+# eval "$(rbenv init -)" &&
+
+RUN dpkg -l bash
+# RUN rbenv version && rbenv versions && rbenv which gem && rbenv which ruby && echo $PATH && type rbenv && echo HOME ist $HOME SHELL is $SHELL && ls -lrt /home/yus/.rbenv/bin && ruby -v
+RUN eval "$(rbenv init -)" && echo calling which && rbenv which gem
+RUN type rbenv
+RUN eval "$(rbenv init -)" && pwd && find . -name gem && echo PATH ist $PATH &&  which gem
+RUN eval "$(rbenv init -)" && rbenv versions && which gem && which ruby && ruby -v && gem install bundler
+RUN eval "$(rbenv init -)" && echo $PATH && which bundler
+
