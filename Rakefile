@@ -1,18 +1,15 @@
-# -*- ruby -*-
+require "bundler/gem_tasks"
+require "rspec/core/rake_task"
+require 'rake/testtask'
 
-require 'rubygems'
-require 'hoe'
+RSpec::Core::RakeTask.new(:spec)
 
-# Hoe.plugin :compiler
-# Hoe.plugin :gem_prelude_sucks
-# Hoe.plugin :inline
-# Hoe.plugin :inline
-# Hoe.plugin :minitest
-# Hoe.plugin :racc
-# Hoe.plugin :rubyforge
-
-Hoe.spec 'yus' do
-
-  developer('Yasuhiro Asaka, Zeno R.R. Davatz', 'yasaka@ywesee.com,  zdavatz@ywesee.com')
-
+desc 'test using minittest via test/suite.rb'
+Rake::TestTask.new do |t|
+  $LOAD_PATH << File.dirname(__FILE__)
+  require 'test/suite'
+  t.libs << "test"
+  t.pattern = 'test/**/*_test.rb'
 end
+
+

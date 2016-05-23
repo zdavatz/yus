@@ -5,8 +5,7 @@ require 'drb'
 require 'yus/entity'
 require 'yus/session'
 require 'needle'
-
-VERSION = '1.0.2'
+require 'yus/version'
 
 module Yus
   class Server

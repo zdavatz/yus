@@ -9,7 +9,6 @@ require 'password'
 require 'rclconf'
 require 'yus/session'
 require 'getoptlong'
-require 'continuation'
 
 opts = []
 GetoptLong.new(
@@ -21,14 +20,7 @@ GetoptLong.new(
   opts.push(pair.join('=')[2..-1])
 }
 
-name = ARGV.first
-
-unless(name)
-	puts <<-EOS
-Usage: yus_passwd <username>
-	EOS
-  exit
-end
+filename = ARGV.first
 
 default_dir = File.join(ENV['HOME'], '.yus')
 default_config_files = [
@@ -57,14 +49,5 @@ rescue Yus::YusError => e
   retry
 end
 
-cont = nil
-callcc { |cont| }
-pass1 = Password.get("New Password for #{name}: ")
-pass2 = Password.get("Repeat Password for #{name}: ")
+session.dump_to_yaml(filename)
 
-if(pass1 != pass2)
-  puts "Passwords did not match"
-  cont.call
-end
-
-session.set_password(name, pass1.to_s)

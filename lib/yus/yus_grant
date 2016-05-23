@@ -9,23 +9,31 @@ require 'password'
 require 'rclconf'
 require 'yus/session'
 require 'getoptlong'
-require 'continuation'
 
 opts = []
+command = :grant
+date = 'until'
 GetoptLong.new(
-  ['--config', '-c', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--root_name', '-r', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--server_url', '-u', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--yus_dir', '-d', GetoptLong::OPTIONAL_ARGUMENT]
-).each { |pair|
-  opts.push(pair.join('=')[2..-1])
+  ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
+  ['--root_name', '-r', GetoptLong::REQUIRED_ARGUMENT],
+  ['--server_url', '-u', GetoptLong::REQUIRED_ARGUMENT],
+  ['--yus_dir', '-d', GetoptLong::REQUIRED_ARGUMENT],
+  ['--revoke', '-R', GetoptLong::NO_ARGUMENT]
+).each { |key, value|
+	case key
+	when '--revoke'
+		command = :revoke
+    date = 'from'
+	else
+		opts.push([key, value].join('=')[2..-1])
+	end
 }
 
-name = ARGV.first
+name, action, item, expires = ARGV
 
-unless(name)
+unless(action)
 	puts <<-EOS
-Usage: yus_passwd <username>
+Usage: yus_grant <username> <action> [<item> [<expiry_time>]]
 	EOS
   exit
 end
@@ -42,6 +50,17 @@ defaults = {
   'yus_dir'           => default_dir,
 }
 
+time = nil
+if expires
+  if match = /(\d{1,2})\.(\d{1,2})\.(\d{4})/.match(expires.to_s)
+  time = Time.local(match[3].to_i, match[2].to_i, match[1].to_i)
+  else
+    puts <<-EOS
+expiry_date must be in the Format: mm.dd.YYYY
+    EOS
+  end
+end
+
 config = RCLConf::RCLConf.new(opts, defaults)
 config.load(config.config)
 
@@ -57,14 +76,6 @@ rescue Yus::YusError => e
   retry
 end
 
-cont = nil
-callcc { |cont| }
-pass1 = Password.get("New Password for #{name}: ")
-pass2 = Password.get("Repeat Password for #{name}: ")
-
-if(pass1 != pass2)
-  puts "Passwords did not match"
-  cont.call
-end
-
-session.set_password(name, pass1.to_s)
+session.send(command, name, action, item, time)
+puts sprintf("%sed permission to %s %s for %s %s %s", 
+             command, action, item, name, date, expires)

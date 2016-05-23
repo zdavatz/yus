@@ -1,3 +1,8 @@
+=== 1.0.3 / 23.05.2016
+
+* Make it run under Ruby >= 2.1
+* Replaced hoe by bundler/gem_tasks
+
 === 1.0.2 / 01.10.2014
 
 * Added bin/yus_dump to dump yus-database into data/yus_dump.yml

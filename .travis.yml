@@ -5,13 +5,14 @@ before_install:
 bundler_args: --without debugger
 
 script:
-  - rake test
+  - bundle exec rake test
 
 notifications:
   email:
   - ngiger@ywesee.com
 rvm:
   - ruby-head
+  - 2.3.0
   - 2.2.3
   - 2.1.7
   - 1.8.7

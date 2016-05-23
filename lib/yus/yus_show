@@ -9,23 +9,29 @@ require 'password'
 require 'rclconf'
 require 'yus/session'
 require 'getoptlong'
-require 'continuation'
 
 opts = []
+recursive = false
 GetoptLong.new(
-  ['--config', '-c', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--root_name', '-r', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--server_url', '-u', GetoptLong::OPTIONAL_ARGUMENT],
-  ['--yus_dir', '-d', GetoptLong::OPTIONAL_ARGUMENT]
-).each { |pair|
-  opts.push(pair.join('=')[2..-1])
+  ['--config', '-c', GetoptLong::REQUIRED_ARGUMENT],
+  ['--root_name', '-r', GetoptLong::REQUIRED_ARGUMENT],
+  ['--server_url', '-u', GetoptLong::REQUIRED_ARGUMENT],
+  ['--yus_dir', '-d', GetoptLong::REQUIRED_ARGUMENT],
+  ['--recursive', '-R', GetoptLong::NO_ARGUMENT]
+).each { |key, value|
+	case key
+	when '--recursive'
+		recursive = true
+	else
+		opts.push([key, value].join('=')[2..-1])
+	end
 }
 
 name = ARGV.first
 
 unless(name)
 	puts <<-EOS
-Usage: yus_passwd <username>
+Usage: yus_show <username>
 	EOS
   exit
 end
@@ -57,14 +63,4 @@ rescue Yus::YusError => e
   retry
 end
 
-cont = nil
-callcc { |cont| }
-pass1 = Password.get("New Password for #{name}: ")
-pass2 = Password.get("Repeat Password for #{name}: ")
-
-if(pass1 != pass2)
-  puts "Passwords did not match"
-  cont.call
-end
-
-session.set_password(name, pass1.to_s)
+puts session.show(name, recursive)
