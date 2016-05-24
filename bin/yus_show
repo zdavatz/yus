@@ -27,7 +27,6 @@ GetoptLong.new(
     opts.push("#{key}=#{value}")
   end
 }
-
 name = ARGV.first
 
 unless(name)
@@ -36,6 +35,6 @@ Usage: yus_show <username>
 	EOS
   exit
 end
-session = YUS.session
 
+session = YUS.session(opts)
 puts session.show(name, recursive)

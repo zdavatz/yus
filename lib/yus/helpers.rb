@@ -51,6 +51,7 @@ module YUS
       'yus_dir'           => default_config_files,
     }
 
+    opts.each{|opt|opt.sub!(/^--/, '') } # Remove leading '--' from the GetOptLong
     config = RCLConf::RCLConf.new(opts, defaults)
     config.load(config.config)
 

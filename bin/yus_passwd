@@ -5,7 +5,6 @@ $: << File.expand_path('../lib', File.dirname(__FILE__))
 require 'rubygems' if RUBY_VERSION.match('1.8.6')
 require 'drb'
 require 'drb/ssl'
-require 'password'
 require 'rclconf'
 require 'yus/session'
 require 'yus/helpers'
@@ -23,8 +22,8 @@ end
 
 session = YUS.session(opts)
 
-pass1 = YUS.password("New Password for #{name}: ")
-pass2 = YUS.password("Repeat Password for #{name}: ")
+pass1 = YUS.get_password("New Password for #{name}: ")
+pass2 = YUS.get_password("Repeat Password for #{name}: ")
 
 if(pass1 != pass2)
   puts "Passwords did not match"
