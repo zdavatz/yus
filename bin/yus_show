@@ -36,5 +36,5 @@ Usage: yus_show <username>
   exit
 end
 
-session = YUS.session(opts)
+session = Yus.session(opts)
 puts session.show(name, recursive)

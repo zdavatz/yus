@@ -50,7 +50,7 @@ expiry_date must be in the Format: mm.dd.YYYY
   end
 end
 
-session = YUS.session(opts)
+session = Yus.session(opts)
 
 session.send(command, name, action, item, time)
 puts sprintf("%sed permission to %s %s for %s %s %s", 

@@ -10,7 +10,7 @@ require 'yus/session'
 require 'yus/helpers'
 require 'getoptlong'
 
-opts = YUS.default_opts
+opts = Yus.default_opts
 name = ARGV.first
 
 unless(name)
@@ -20,10 +20,10 @@ Usage: yus_passwd <username>
   exit
 end
 
-session = YUS.session(opts)
+session = Yus.session(opts)
 
-pass1 = YUS.get_password("New Password for #{name}: ")
-pass2 = YUS.get_password("Repeat Password for #{name}: ")
+pass1 = Yus.get_password("New Password for #{name}: ")
+pass2 = Yus.get_password("Repeat Password for #{name}: ")
 
 if(pass1 != pass2)
   puts "Passwords did not match"

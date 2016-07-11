@@ -11,9 +11,9 @@ require 'yus/session'
 require 'yus/helpers'
 require 'getoptlong'
 
-opts = YUS.default_opts
+opts = Yus.default_opts
 filename = ARGV.first
 
-session = YUS.session(opts)
+session = Yus.session(opts)
 session.dump_to_yaml(filename)
 

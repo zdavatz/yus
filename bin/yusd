@@ -9,6 +9,7 @@ require 'drb'
 require 'drb/ssl'
 require 'drb/timeridconv'
 require 'digest/sha2'
+require 'odba/18_19_loading_compatibility'
 
 default_dir = File.join(ENV['HOME'], '.yus')
 default_config_files = [
@@ -91,8 +92,7 @@ begin
   url.untaint
   DRb.start_service(url, server, drbconf)
   $SAFE = 1
-	logger.info('start') { 
-		sprintf("starting yus-server on %s", url) }
+	logger.info('start') { sprintf("starting yus-server on %s", url) }
   DRb.thread.join
 rescue Exception => error
 	logger.error('fatal') { error }

@@ -11,7 +11,7 @@ require 'yus/session'
 require 'yus/helpers'
 require 'getoptlong'
 
-opts = YUS.default_opts
+opts = Yus.default_opts
 name, action, item = ARGV
 
 unless(name)
@@ -21,5 +21,5 @@ Usage: yus_delete_user <username>
   exit
 end
 
-session = YUS.session(opts)
+session = Yus.session(opts)
 session.delete_entity(name)

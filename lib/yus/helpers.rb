@@ -5,7 +5,7 @@ require 'rclconf'
 require 'getoptlong'
 require 'highline/import'
 
-module YUS
+module Yus
   def self.default_opts
     opts = []
     GetoptLong.new(
@@ -35,7 +35,7 @@ module YUS
    Root name to use for reading yus
 
 -s --config
-   path to YAML-config of YUS
+   path to YAML-config of Yus
       EOF
       exit
     end
@@ -60,7 +60,7 @@ module YUS
 
     session = nil
     begin
-      pass = YUS.get_password("Password for #{config.root_name}: ")
+      pass = Yus.get_password("Password for #{config.root_name}: ")
       session = server.login(config.root_name, pass.to_s, 'commandline')
     rescue Yus::YusError => e
       puts e.message
