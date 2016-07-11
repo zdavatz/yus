@@ -1,3 +1,9 @@
+=== 1.0.4 / 11.07.2016
+
+* Added yus_migrate_to_utf_8
+* Cleanup yus/helpers and bin/yus* to use always module name Yus (not YUS)
+* Fixed an error preventing yusd to run under Ruby 2.3.1
+
 === 1.0.3 / 23.05.2016
 
 * Make it run under Ruby >= 2.1
