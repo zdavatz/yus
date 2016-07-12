@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# encoding: utf-8
+#encoding: ASCII-8BIT
 require 'fileutils'
 require 'syck'
 
@@ -125,10 +125,11 @@ module Yus
         end
       when String
         old = child.encoding
+        orig = child.clone
         if ( child.encoding != Encoding::UTF_8 && child.force_encoding(Encoding::ISO_8859_1).valid_encoding? ) ||
            ( child.encoding == Encoding::UTF_8 && !child.valid_encoding? )
-          child = child.force_encoding(Encoding::ISO_8859_1).clone.encode(Encoding::UTF_8)
-          puts "force_encoding from ISO_8859_1 #{old}. is now #{child}" unless child.to_i > 0
+          child = child.force_encoding(Encoding::UTF_8)
+          puts "force_encoding from ISO_8859_1 #{old}. Now #{child}" unless child.to_i > 0
         end
         case child.encoding.to_s
         when /ASCII-8BIT|US-ASCII/
