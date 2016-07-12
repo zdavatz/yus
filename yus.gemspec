@@ -14,9 +14,7 @@ Gem::Specification.new do |spec|
   spec.license     = "GPLv3"
   spec.homepage  = "https://github.com/zdavatz/yus/"
 
-  if RUBY_VERSION.to_f > 2.0
-    spec.metadata['allowed_push_host'] = 'RubyGems.org'
-  end
+  spec.metadata['allowed_push_host'] = 'rubygems.org' if RUBY_VERSION.to_f > 2.0
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
