@@ -8,7 +8,7 @@ require 'pp'
 require 'yaml'
 require 'fileutils'
 
-begin 
+begin
   require 'encoding/character/utf-8'
 rescue LoadError
 end
@@ -25,7 +25,7 @@ module Yus
     end
     def affiliate(name, groupname)
       info("affiliate(name=#{name}, group=#{groupname})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         allow_or_fail('edit', 'yus.entities')
         user = find_or_fail(name)
         group = find_or_fail(groupname)
@@ -58,7 +58,7 @@ module Yus
     def create_entity(name, valid_until=nil, valid_from=Time.now)
       info("create_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
       entity = nil
-      @mutex.synchronize { 
+      @mutex.synchronize {
         allow_or_fail('edit', 'yus.entities')
         if(@needle.persistence.find_entity(name))
           debug("create_entity: Duplicate Name: '#{name}'")
@@ -84,7 +84,7 @@ module Yus
     end
     def disaffiliate(name, groupname)
       info("disaffiliate(name=#{name}, group=#{groupname})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         allow_or_fail('edit', 'yus.entities')
         user = find_or_fail(name)
         group = find_or_fail(groupname)
@@ -107,7 +107,7 @@ module Yus
     end
     def grant(name, action, item=nil, expires=nil)
       info("grant(name=#{name}, action=#{action}, item=#{item}, expires=#{expires})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         allow_or_fail('grant', action)
         user = find_or_fail(name)
         user.grant(action, item || :everything, expires || :never)
@@ -127,7 +127,7 @@ module Yus
     end
     def rename(oldname, newname)
       info("rename(#{oldname}, #{newname})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         allow_or_fail('edit', 'yus.entities')
         user = find_or_fail(oldname)
         if((other = @needle.persistence.find_entity(newname)) && other != user)
@@ -198,13 +198,13 @@ module Yus
       @domain = domain
       super(needle)
     end
-    def allowed?(*args)
+    def allowed?(*args) # AutoSession
       false
     end
     def create_entity(name, pass=nil, valid_until=nil, valid_from=Time.now)
       info("create_entity(name=#{name}, valid_until=#{valid_until}, valid_from=#{valid_from})")
       entity = nil
-      @mutex.synchronize { 
+      @mutex.synchronize {
         if(@needle.persistence.find_entity(name))
           debug("create_entity: Duplicate Name: '#{name}'")
           raise DuplicateNameError, "Duplicate name: #{name}"
@@ -223,14 +223,14 @@ module Yus
     end
     def get_entity_preference(name, key, domain=@domain)
       debug("get_entity_preference(name=#{name}, key=#{key}, domain=#{domain})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         user = find_or_fail(name)
         user.get_preference(key, domain)
       }
     end
     def get_entity_preferences(name, keys, domain=@domain)
       debug("get_entity_preferences(name=#{name}, keys=#{keys}, domain=#{domain})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         user = find_or_fail(name)
         keys.inject({}) { |memo, key|
           memo.store(key, user.get_preference(key, domain))
@@ -240,7 +240,7 @@ module Yus
     end
     def rename(oldname, newname)
       info("rename(#{oldname}, #{newname})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         user = find_or_fail(oldname)
         if((other = @needle.persistence.find_entity(newname)) && other != user)
           raise DuplicateNameError, "Duplicate name: #{newname}"
@@ -277,7 +277,7 @@ module Yus
     end
     def grant(name, action, item=nil, expires=nil)
       info("grant(name=#{name}, action=#{action}, item=#{item}, expires=#{expires})")
-      @mutex.synchronize { 
+      @mutex.synchronize {
         user = find_or_fail(name)
         user.grant(action, item || :everything, expires || :never)
         save(user)
@@ -291,7 +291,7 @@ module Yus
       @domain = domain
       super(needle)
     end
-    def allowed?(*args)
+    def allowed?(*args)  # EntitySession
       res = @user.allowed?(*args)
       debug("#{@user.name} allowed?(#{args.join(', ')}) returns #{res}")
       res
@@ -331,7 +331,7 @@ module Yus
     end
   end
   class TokenSession < EntitySession
-    def allowed?(*args)
+    def allowed?(*args) # TokenSession
       key, arg, = args
       if key == 'set_password' || ( key == 'edit' && arg == 'yus.entities' )
         false
@@ -341,7 +341,7 @@ module Yus
     end
   end
   class RootSession < Session
-    def allowed?(*args)
+    def allowed?(*args) # RootSession
       true
     end
     def name

@@ -9,7 +9,7 @@ software packages.
 
 ## FEATURES/PROBLEMS:
 
-* Only runs on Ruby 1.8 or ruby >= 2.1.0
+* Only runs on Ruby >= 2.1.0
 
 ## INSTALL:
 

@@ -1,3 +1,9 @@
+=== 1.0.5 / 21.03.2019
+
+* Requires at least ruby 2.1
+* Do not mention pg, ydbd-pg and ydbg in yus.gemspec as it is an indirect dependencies introduced odba
+
+
 === 1.0.4 / 11.07.2016
 
 * Added yus_migrate_to_utf_8

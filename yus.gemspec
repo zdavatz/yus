@@ -22,12 +22,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "needle"
   # Ruby 1.8.7 cannot install pg 0.18.4
-  spec.add_dependency "pg", '0.17.0'
-  spec.add_dependency "ydbi", '>= 0.5.1'
   spec.add_dependency 'rclconf'
   spec.add_dependency 'odba'
 
-  spec.add_runtime_dependency "ydbd-pg", '>= 0.5.1'
   spec.add_runtime_dependency 'highline'
   spec.add_dependency 'deprecated', '2.0.1'
   spec.add_development_dependency "test-unit"

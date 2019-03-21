@@ -1,15 +1,12 @@
 PATH
   remote: .
   specs:
-    yus (1.0.4)
+    yus (1.0.5)
       deprecated (= 2.0.1)
       highline
       needle
       odba
-      pg (= 0.17.0)
       rclconf
-      ydbd-pg (>= 0.5.1)
-      ydbi (>= 0.5.1)
 
 GEM
   remote: https://rubygems.org/
@@ -20,15 +17,15 @@ GEM
     diff-lcs (1.2.5)
     docile (1.1.5)
     flexmock (1.3.3)
-    highline (1.7.8)
+    highline (2.0.1)
     json (2.0.1)
     method_source (0.8.2)
     minitest (5.9.0)
     needle (1.3.0)
-    odba (1.1.2)
-      ydbd-pg (>= 0.5.1)
-      ydbi (>= 0.5.1)
-    pg (0.17.0)
+    odba (1.1.6)
+      ydbd-pg (>= 0.5.6)
+      ydbi (>= 0.5.6)
+    pg (1.1.4)
     power_assert (0.3.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -60,10 +57,10 @@ GEM
     slop (3.6.0)
     test-unit (3.2.0)
       power_assert
-    ydbd-pg (0.5.3)
+    ydbd-pg (0.5.6)
       pg
-      ydbi (>= 0.5.0)
-    ydbi (0.5.3)
+      ydbi (= 0.5.6)
+    ydbi (0.5.6)
       deprecated (= 2.0.1)
 
 PLATFORMS
@@ -81,4 +78,4 @@ DEPENDENCIES
   yus!
 
 BUNDLED WITH
-   1.12.5
+   1.17.1

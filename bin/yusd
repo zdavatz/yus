@@ -29,7 +29,7 @@ defaults = {
   'persistence'       => 'odba',
   'root_name'         => 'admin',
   'root_pass'         => nil,
-  'server_url'        => 'drbssl://localhost:9997',
+  'server_url'        => 'drbssl://127.0.0.1:9997',
   'session_timeout'   => 300,
   'ssl_key'           => File.expand_path('../data/yus.key', 
                                           File.dirname(__FILE__)),
