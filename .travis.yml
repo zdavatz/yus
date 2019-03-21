@@ -13,8 +13,6 @@ notifications:
 rvm:
   - ruby-head
   - 2.3.0
-  - 2.2.3
-  - 2.1.7
   - 2.5.0
 matrix:
   allow_failures:

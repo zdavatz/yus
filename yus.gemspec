@@ -21,9 +21,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "needle"
-  # Ruby 1.8.7 cannot install pg 0.18.4
   spec.add_dependency 'rclconf'
-  spec.add_dependency 'odba'
+  spec.add_dependency 'odba', '>= 1.1.6'
 
   spec.add_runtime_dependency 'highline'
   spec.add_dependency 'deprecated', '2.0.1'
