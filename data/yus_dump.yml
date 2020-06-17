@@ -3,12 +3,12 @@ entities:
   entity_name: !ruby/object:Yus::Entity
     name: entity_name
     valid_until: entity_pass
-    valid_from: 2016-05-23 17:41:00.786953476 +02:00
+    valid_from: 2020-06-17 09:42:09.633800037 +02:00
     affiliations:
     - &1 !ruby/object:Yus::Entity
       name: a_yus_group
       valid_until: entity_pass
-      valid_from: 2016-05-23 17:41:00.787118766 +02:00
+      valid_from: 2020-06-17 09:42:09.634001115 +02:00
       affiliations: []
       privileges:
         set_password: !ruby/object:Yus::Privilege
@@ -30,7 +30,7 @@ entities:
   second_name: !ruby/object:Yus::Entity
     name: second_name
     valid_until: entity_pass
-    valid_from: 2016-05-23 17:41:00.787038968 +02:00
+    valid_from: 2020-06-17 09:42:09.633903583 +02:00
     affiliations: []
     privileges:
       set_password: !ruby/object:Yus::Privilege

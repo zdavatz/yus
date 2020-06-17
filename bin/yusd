@@ -31,9 +31,9 @@ defaults = {
   'root_pass'         => nil,
   'server_url'        => 'drbssl://127.0.0.1:9997',
   'session_timeout'   => 300,
-  'ssl_key'           => File.expand_path('../data/yus.key', 
+  'ssl_key'           => File.expand_path('../data/yus.key',
                                           File.dirname(__FILE__)),
-  'ssl_cert'          => File.expand_path('../data/yus.crt', 
+  'ssl_cert'          => File.expand_path('../data/yus.crt',
                                           File.dirname(__FILE__)),
   'token_lifetime'    => 30,
   'yus_dir'           => default_dir,
@@ -84,14 +84,12 @@ begin
   when /drbssl/
     keypath = File.expand_path(config.ssl_key, config.yus_dir)
     certpath = File.expand_path(config.ssl_cert, config.yus_dir)
-    drbconf.update({      
+    drbconf.update({
       :SSLPrivateKey => OpenSSL::PKey::RSA.new(File.read(keypath)),
       :SSLCertificate => OpenSSL::X509::Certificate.new(File.read(certpath)),
     })
   end
-  url.untaint
   DRb.start_service(url, server, drbconf)
-  $SAFE = 1
 	logger.info('start') { sprintf("starting yus-server on %s", url) }
   DRb.thread.join
 rescue Exception => error

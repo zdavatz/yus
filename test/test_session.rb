@@ -113,8 +113,8 @@ module Yus
         assert_equal('value', val)
         value = val
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @session.set_entity_preference('name', 'key', 'value')
       @session.set_entity_preference('name', 'key', 'other')
@@ -149,7 +149,7 @@ module Yus
       user.should_receive(:allowed?).and_return { |action, key|
         eact, ekey = expecteds.shift
         assert_equal(eact, action)
-        assert_equal(ekey, key)
+        key ? assert_equal(ekey, key) : assert_nil(key)
         action == 'action2'
       }
       @persistence.should_receive(:find_entity, 2).times(2).and_return { user }
@@ -214,8 +214,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @session.grant('username', 'action', 'key')
     end
@@ -264,7 +264,7 @@ module Yus
         assert_equal('yus.entities', key)
         false
       }
-      assert_raises(NotPrivilegedError) { 
+      assert_raises(NotPrivilegedError) {
         @session.create_entity('name')
       }
     end
@@ -309,7 +309,7 @@ module Yus
         assert_equal('yus.entities', key)
         false
       }
-      assert_raises(NotPrivilegedError) { 
+      assert_raises(NotPrivilegedError) {
         @session.entities
       }
     end
@@ -378,8 +378,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @user.should_receive(:allowed?).and_return { |action, key|
         assert_equal('grant', action)
@@ -398,8 +398,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @user.should_receive(:allowed?).and_return { |action, key|
         assert_equal('grant', action)
@@ -423,7 +423,7 @@ module Yus
         false
       }
       assert_raises(NotPrivilegedError) {
-        @session.set_password('name', 'cleartext') 
+        @session.set_password('name', 'cleartext')
       }
     end
     def test_set_password__no_user
@@ -437,7 +437,7 @@ module Yus
         true
       }
       assert_raises(UnknownEntityError) {
-        @session.set_password('username', 'cleartext') 
+        @session.set_password('username', 'cleartext')
       }
     end
     def test_set_password__success
@@ -446,8 +446,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @user.should_receive(:allowed?).and_return { |action, name|
         assert_equal('set_password', action)
@@ -458,7 +458,7 @@ module Yus
       entity.should_receive(:passhash=).and_return { |hash|
         assert_equal(Digest::SHA256.hexdigest('cleartext'), hash)
       }
-      @session.set_password('username', 'cleartext') 
+      @session.set_password('username', 'cleartext')
     end
     def test_rename__not_allowed
       @user.should_receive(:allowed?).and_return { |action, name|
@@ -467,7 +467,7 @@ module Yus
         false
       }
       assert_raises(NotPrivilegedError) {
-        @session.rename('oldname', 'newname') 
+        @session.rename('oldname', 'newname')
       }
     end
     def test_rename__no_user
@@ -481,7 +481,7 @@ module Yus
         true
       }
       assert_raises(UnknownEntityError) {
-        @session.rename('oldname', 'newname') 
+        @session.rename('oldname', 'newname')
       }
     end
     def test_rename__duplicate_name
@@ -500,7 +500,7 @@ module Yus
         true
       }
       assert_raises(DuplicateNameError) {
-        @session.rename('oldname', 'newname') 
+        @session.rename('oldname', 'newname')
       }
     end
     def test_rename__success
@@ -531,7 +531,7 @@ module Yus
         assert_equal('yus.entities', name)
         true
       }
-      @session.rename('oldname', 'newname') 
+      @session.rename('oldname', 'newname')
     end
     def test_revoke__not_allowed
       @user.should_receive(:allowed?).and_return { |action, key|
@@ -567,8 +567,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @user.should_receive(:allowed?).and_return { |action, key|
         assert_equal('grant', action)
@@ -587,8 +587,8 @@ module Yus
         assert_equal('username', name)
         entity
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @user.should_receive(:allowed?).and_return { |action, key|
         assert_equal('grant', action)
@@ -603,7 +603,7 @@ module Yus
         assert_equal('yus.entities', key)
         false
       }
-      assert_raises(NotPrivilegedError) { 
+      assert_raises(NotPrivilegedError) {
         @session.affiliate('name', 'group')
       }
     end
@@ -664,7 +664,7 @@ module Yus
         assert_equal('yus.entities', key)
         false
       }
-      assert_raises(NotPrivilegedError) { 
+      assert_raises(NotPrivilegedError) {
         @session.disaffiliate('name', 'group')
       }
     end
@@ -725,7 +725,7 @@ module Yus
         assert_equal('yus.entities', key)
         false
       }
-      assert_raises(NotPrivilegedError) { 
+      assert_raises(NotPrivilegedError) {
         @session.set_entity_preference('name', 'key', 'value')
       }
     end
@@ -758,8 +758,8 @@ module Yus
         assert_equal('key', key)
         assert_equal('value', val)
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(entity, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(entity, user)
       }
       @session.set_entity_preference('name', 'key', 'value')
     end
@@ -769,15 +769,15 @@ module Yus
         assert_equal('value', val)
         assert_equal('domain', domain)
       }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(@user, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(@user, user)
       }
       @session.set_preference('key', 'value')
     end
     def test_set_preferences
       @user.should_receive(:set_preference, 2).times(2).and_return { |key, val, domain| }
-      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user| 
-        assert_equal(@user, user) 
+      @persistence.should_receive(:save_entity, 1).times(1).and_return { |user|
+        assert_equal(@user, user)
       }
       @session.set_preferences({'key1' => 'value1', 'key2' => 'value2'})
     end
