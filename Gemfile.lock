@@ -7,56 +7,49 @@ PATH
       needle
       odba (>= 1.1.6)
       rclconf
+      ydbd-pg
+      ydbi
 
 GEM
   remote: https://rubygems.org/
   specs:
-    byebug (11.1.3)
-    coderay (1.1.3)
     deprecated (2.0.1)
-    diff-lcs (1.3)
-    docile (1.3.2)
+    diff-lcs (1.5.0)
+    docile (1.4.0)
     flexmock (1.3.3)
     highline (2.0.3)
-    method_source (1.0.0)
-    minitest (5.14.3)
+    minitest (5.15.0)
     needle (1.3.0)
-    odba (1.1.6)
-      ydbd-pg (>= 0.5.9)
-      ydbi (>= 0.5.9)
-    pg (1.4.5)
-    power_assert (1.2.0)
-    pry (0.13.1)
-      coderay (~> 1.1)
-      method_source (~> 1.0)
-    pry-byebug (3.9.0)
-      byebug (~> 11.0)
-      pry (~> 0.13.0)
-    rake (13.0.1)
+    odba (1.1.8)
+    pg (1.2.3)
+    power_assert (2.0.1)
+    rake (13.0.6)
     rclconf (1.0.0)
-    rspec (3.9.0)
-      rspec-core (~> 3.9.0)
-      rspec-expectations (~> 3.9.0)
-      rspec-mocks (~> 3.9.0)
-    rspec-core (3.9.2)
-      rspec-support (~> 3.9.3)
-    rspec-expectations (3.9.2)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.1)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.9.0)
-    rspec-mocks (3.9.1)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.9.0)
-    rspec-support (3.9.3)
-    simplecov (0.18.5)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.3)
+    simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
-    test-unit (3.3.6)
+    simplecov_json_formatter (0.1.3)
+    test-unit (3.5.3)
       power_assert
-    ydbd-pg (0.5.9)
+    ydbd-pg (0.5.8)
       pg
-      ydbi (= 0.5.9)
-    ydbi (0.5.9)
+      ydbi (= 0.5.8)
+    ydbi (0.5.8)
       deprecated (= 2.0.1)
 
 PLATFORMS
@@ -66,7 +59,6 @@ DEPENDENCIES
   bundler
   flexmock (~> 1.3.0)
   minitest
-  pry-byebug
   rake
   rspec
   simplecov
@@ -74,4 +66,4 @@ DEPENDENCIES
   yus!
 
 BUNDLED WITH
-   2.1.4
+   2.2.4
