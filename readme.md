@@ -2,21 +2,22 @@
 
 * https://github.com/zdavatz/yus
 
-## DESCRIPTION:
+## Description:
 
 ywesee user server. Works with the ywesee webframework and all the ywesee
 software packages.
 
-## FEATURES/PROBLEMS:
+## Features/Problems:
 
 * Only runs on Ruby >= 2.1.0
+* runs fine with Ruby 3.1.1
 
-## INSTALL:
+## Install:
 
-* sudo gem install yus
-* bundle install --without development
+* `sudo gem install yus`
+* `bundle install --without development`
 
-## DEVELOPERS:
+## Developers:
 
 * Masaomi Hatakeyama
 * Zeno Davatz
