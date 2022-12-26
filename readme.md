@@ -14,6 +14,7 @@ software packages.
 ## INSTALL:
 
 * sudo gem install yus
+* bundle install --without development
 
 ## DEVELOPERS:
 
