@@ -22,8 +22,8 @@ GEM
     minitest (5.14.1)
     needle (1.3.0)
     odba (1.1.6)
-      ydbd-pg (>= 0.5.6)
-      ydbi (>= 0.5.6)
+      ydbd-pg (>= 0.5.9)
+      ydbi (>= 0.5.9)
     pg (1.2.3)
     power_assert (1.2.0)
     pry (0.13.1)
@@ -53,10 +53,10 @@ GEM
     simplecov-html (0.12.2)
     test-unit (3.3.6)
       power_assert
-    ydbd-pg (0.5.6)
+    ydbd-pg (0.5.9)
       pg
-      ydbi (= 0.5.6)
-    ydbi (0.5.6)
+      ydbi (= 0.5.9)
+    ydbi (0.5.9)
       deprecated (= 2.0.1)
 
 PLATFORMS
