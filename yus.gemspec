@@ -21,6 +21,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "needle"
+  spec.add_dependency "ydbi"
+  spec.add_dependency "ydbd-pg"
   spec.add_dependency 'rclconf'
   spec.add_dependency 'odba', '>= 1.1.6'
 
@@ -28,12 +30,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'deprecated', '2.0.1'
   spec.add_development_dependency "test-unit"
   spec.add_development_dependency "minitest"
-  if RUBY_VERSION.to_f > 2.0
-    spec.add_development_dependency "pry-byebug"
-  end
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "flexmock", '~>1.3.0'
   spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
 end
