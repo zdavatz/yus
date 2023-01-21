@@ -11,7 +11,7 @@ require 'drb/timeridconv'
 require 'digest/sha2'
 require 'odba/18_19_loading_compatibility'
 
-default_dir = File.join(ENV['HOME'], '.yus')
+default_dir = File.join('/etc/yus/yus.yml')
 default_config_files = [
   File.join(default_dir, 'yus.yml'),
   '/etc/yus/yus.yml',
