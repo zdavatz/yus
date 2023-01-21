@@ -39,10 +39,9 @@ module Yus
       EOF
       exit
     end
-    default_dir = File.join(ENV['HOME'], '.yus')
+    default_dir = '/etc/yus'
     default_config_files = [
       File.join(default_dir, 'yus.yml'),
-      '/etc/yus/yus.yml',
     ]
      defaults = {
       'config'            => default_config_files,
