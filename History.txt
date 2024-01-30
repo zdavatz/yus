@@ -1,3 +1,10 @@
+=== not yet released
+
+* (#8) Force yus.yml to be found in /etc/yus
+* Add devenv environment
+* changelog_uri to gemspec
+* Fix spelling for default cleaner_interval in bin/yusd
+
 === 1.0.6 / 17.06.2020
 
 * Update for Ruby 2.7.1, remove obsolete calls to untaint/SAFE

@@ -5,12 +5,13 @@
   env.GREET = "devenv";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.libyaml pkgs.postgresql_14 ];
+  packages = [ pkgs.git pkgs.libyaml ];
 
   enterShell = ''
     echo This is the devenv shell for oddb2xml
     git --version
     ruby --version
+    psql --version
   '';
 
   # env.FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
@@ -20,11 +21,27 @@
 
   languages.ruby.enable = true;
   languages.ruby.versionFile = ./.ruby-version;
-  # https://devenv.sh/pre-commit-hooks/
-  # pre-commit.hooks.shellcheck.enable = true;
+  services.postgres = {
+    enable = true;
+    package = pkgs.postgresql_16;
+    listen_addresses = "0.0.0.0";
+    port = 5435;
 
-  # https://devenv.sh/processes/
-  # processes.ping.exec = "ping example.com";
+    initialDatabases = [
+      { name = "yus"; }
+    ];
 
+    initdbArgs =
+      [
+        "--locale=C"
+        "--encoding=UTF8"
+      ];
+
+    initialScript = ''
+      create role yus superuser login password null;
+      \connect yus;
+      \i 22:20-postgresql_database-yus-backup
+    '';
+  };
   # See full reference at https://devenv.sh/reference/options/
 }
