@@ -16,7 +16,7 @@ default_config_files = [
   File.join(default_dir, 'yus.yml'),
 ]
 defaults = {
-  'cleaning_interval' =>  300,
+  'cleaner_interval' =>  300,
   'config'			      => default_config_files,
   'db_name'           => 'yus',
   'db_user'           => 'yus',
