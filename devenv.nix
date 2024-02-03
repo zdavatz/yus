@@ -1,10 +1,8 @@
+# Please look at the file [oddb.org/devenv.README.md](https://github.com/zdavatz/oddb.org/blob/ruby-3.2/devenv.README.md)
 { pkgs, ... }:
 
 {
-  # https://devenv.sh/basics/
-  env.GREET = "devenv";
 
-  # https://devenv.sh/packages/
   packages = [ pkgs.git pkgs.libyaml ];
 
   enterShell = ''
@@ -13,11 +11,6 @@
     ruby --version
     psql --version
   '';
-
-  # env.FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
-
-  # https://devenv.sh/languages/
-  # languages.nix.enable = true;
 
   languages.ruby.enable = true;
   languages.ruby.versionFile = ./.ruby-version;
@@ -40,8 +33,7 @@
     initialScript = ''
       create role yus superuser login password null;
       \connect yus;
-      \i 22:20-postgresql_database-yus-backup
+      \i ../22:20-postgresql_database-yus-backup
     '';
   };
-  # See full reference at https://devenv.sh/reference/options/
 }
