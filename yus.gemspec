@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.license     = "GPLv3"
   spec.homepage  = "https://github.com/zdavatz/yus/"
   spec.metadata["changelog_uri"] = spec.homepage + "/blob/master/History.txt"
+  spec.required_ruby_version = '>= 3.0'
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org' if RUBY_VERSION.to_f > 2.0
 
@@ -25,10 +26,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency "ydbi"
   spec.add_dependency "ydbd-pg"
   spec.add_dependency 'rclconf'
+  spec.add_dependency 'logger'
   spec.add_dependency 'odba', '>= 1.1.6'
 
   spec.add_runtime_dependency 'highline'
   spec.add_dependency 'deprecated', '2.0.1'
+  spec.add_development_dependency "drb"
   spec.add_development_dependency "test-unit"
   spec.add_development_dependency "minitest"
   spec.add_development_dependency "bundler"

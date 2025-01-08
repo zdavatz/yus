@@ -1,26 +1,30 @@
+# Please look at the file [oddb.org/devenv.README.md](https://github.com/zdavatz/oddb.org/blob/ruby-3.2/devenv.README.md)
 { pkgs, ... }:
 
 {
-  # https://devenv.sh/basics/
   env.GREET = "devenv";
-
-  # https://devenv.sh/packages/
-  packages = [ pkgs.git pkgs.libyaml ];
+  packages = [ pkgs.git pkgs.libyaml ]; #  after I added pkgs.openssl here, I could no longer call devenup because of a glibc mismatch
+  # therefore I ${pkgs.openssl}/bin/openssl in the enterShell
 
   enterShell = ''
     echo This is the devenv shell for oddb2xml
     git --version
     ruby --version
     psql --version
+    OLD_YUS_CRT=`git status --porcelain data;`
+    if [[ -z $OLD_YUS_CRT ]]; then
+      echo Must replace old yus certificat from 2006
+      cd data
+      pwd
+      ${pkgs.openssl}/bin/openssl req -nodes -new -x509 -key yus.key -out yus.crt -subj "/C=CH/ST=Zurich/L=Zurich/O=ywesee GmbH/OU=IT Department CI/CN=ywesee.com"
+    else
+      echo Found changed data/yus.key
+    fi
+    bundle install
   '';
 
-  # env.FREEDESKTOP_MIME_TYPES_PATH = "${pkgs.shared-mime-info}/share/mime/packages/freedesktop.org.xml";
-
-  # https://devenv.sh/languages/
-  # languages.nix.enable = true;
-
   languages.ruby.enable = true;
-  languages.ruby.versionFile = ./.ruby-version;
+  languages.ruby.version = "3.4";
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_16;
@@ -40,8 +44,7 @@
     initialScript = ''
       create role yus superuser login password null;
       \connect yus;
-      \i 22:20-postgresql_database-yus-backup
+      \i ../22:20-postgresql_database-yus-backup
     '';
   };
-  # See full reference at https://devenv.sh/reference/options/
 }
