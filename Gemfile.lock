@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    yus (1.0.6)
+    yus (1.0.7)
       deprecated (= 2.0.1)
       highline
       logger

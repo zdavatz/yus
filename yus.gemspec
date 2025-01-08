@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.license     = "GPLv3"
   spec.homepage  = "https://github.com/zdavatz/yus/"
   spec.metadata["changelog_uri"] = spec.homepage + "/blob/master/History.txt"
+  spec.required_ruby_version = '>= 3.0'
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org' if RUBY_VERSION.to_f > 2.0
 

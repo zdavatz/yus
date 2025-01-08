@@ -1,7 +1,9 @@
-=== not yet released
+=== 1.0.7 / 08.01.2025
 
+* Added devenv environment for Ruby 3.4 (see https://devenv.sh/)
+* Fixed Rakefile
+* Added minimal Ruby version 3.0 in gemspec
 * (#8) Force yus.yml to be found in /etc/yus
-* Add devenv environment
 * changelog_uri to gemspec
 * Fix spelling for default cleaner_interval in bin/yusd
 
