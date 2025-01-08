@@ -24,7 +24,7 @@
   '';
 
   languages.ruby.enable = true;
-  languages.ruby.versionFile = ./.ruby-version;
+  languages.ruby.version = "3.4";
   services.postgres = {
     enable = true;
     package = pkgs.postgresql_16;

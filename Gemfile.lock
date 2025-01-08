@@ -4,6 +4,7 @@ PATH
     yus (1.0.6)
       deprecated (= 2.0.1)
       highline
+      logger
       needle
       odba (>= 1.1.6)
       rclconf
@@ -13,25 +14,31 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    bigdecimal (3.1.6)
+    bigdecimal (3.1.9)
     deprecated (2.0.1)
-    docile (1.4.0)
+    docile (1.4.1)
+    drb (2.2.1)
     flexmock (1.3.3)
-    highline (2.1.0)
-    minitest (5.17.0)
+    highline (3.1.2)
+      reline
+    io-console (0.8.0)
+    logger (1.6.4)
+    minitest (5.25.4)
     needle (1.3.0)
     odba (1.1.8)
-    pg (1.5.4)
-    power_assert (2.0.3)
-    rake (13.0.6)
+    pg (1.5.9)
+    power_assert (2.0.5)
+    rake (13.2.1)
     rclconf (1.0.0)
+    reline (0.6.0)
+      io-console (~> 0.5)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
+    simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
-    test-unit (3.5.7)
+    test-unit (3.6.7)
       power_assert
     ydbd-pg (0.6.0)
       pg
@@ -43,9 +50,11 @@ GEM
 
 PLATFORMS
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   bundler
+  drb
   flexmock (~> 1.3.0)
   minitest
   rake
@@ -54,4 +63,4 @@ DEPENDENCIES
   yus!
 
 BUNDLED WITH
-   2.4.2
+   2.5.22
